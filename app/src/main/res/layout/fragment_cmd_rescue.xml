@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="500dp"
+        android:layout_height="400dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="@mipmap/shebeiguanli_beijing">
+
+        <TextView
+            android:id="@+id/soujiu_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center_horizontal"
+            android:text="下发搜救"
+            android:textColor="@color/fontcolor_dep2"
+            android:textSize="@dimen/fontsize_3">
+        </TextView>
+
+        <TextView
+            android:id="@+id/rescued_tile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/fontcolor_common"
+            android:textSize="@dimen/fontsize_4"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/soujiu_title"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp"
+            android:text="报警队员">
+        </TextView>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rescued_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/rescued_tile"
+            android:layout_below="@+id/rescued_tile"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            ></androidx.recyclerview.widget.RecyclerView>
+
+
+        <TextView
+            android:id="@+id/rescue_tile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/fontcolor_common"
+            android:textSize="@dimen/fontsize_4"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/rescued_list"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp"
+            android:text="救援队员">
+        </TextView>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rescue_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/rescue_tile"
+            android:layout_below="@+id/rescue_tile"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            android:fadingEdge="none"
+            android:cacheColorHint="#00000000"
+        ></androidx.recyclerview.widget.RecyclerView>
+
+
+        <Button
+            android:id="@+id/firemen_rescue_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/ensure"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/fontsize_4"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
+            android:text="发送">
+        </Button>
+
+
+    </RelativeLayout>
+</RelativeLayout>

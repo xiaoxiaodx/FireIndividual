@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@+id/statebar"
+    android:layout_below="@+id/masterMenu"
+    android:layout_marginVertical="10dp">
+
+    <LinearLayout
+        android:id="@+id/leftMenu"
+        android:layout_width="@dimen/leftRightContentWidth"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/masterMenu"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/colorStates">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginVertical="5dp"
+                android:text="操作"
+                android:textSize="@dimen/fontsize_2"
+                android:textColor="#ADCEFE"></TextView>
+        </LinearLayout>
+
+
+        <GridView
+            android:id="@+id/contrlo_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="10dp"
+            android:paddingTop="40dp"
+            android:paddingHorizontal="25dp"
+            android:background="@mipmap/leftbackground"
+            android:numColumns="2"
+            android:cacheColorHint="#00000000"
+            android:stretchMode="columnWidth"
+            android:horizontalSpacing="10dp"
+            android:verticalSpacing="20dp"></GridView>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/maincontent_framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/rightFloor"
+        android:layout_toRightOf="@+id/leftMenu"
+        android:background="@drawable/maincontent"></FrameLayout>
+
+
+    <LinearLayout
+        android:id="@+id/rightFloor"
+        android:layout_width="@dimen/leftRightContentWidth"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/masterMenu"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/colorStates">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="信息"
+                android:textSize="@dimen/fontsize_2"
+                android:layout_marginVertical="5dp"
+                android:textColor="#ADCEFE"></TextView>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@mipmap/rightbackground">
+
+            <com.example.firecommandandcontrolsystem.myClass.FloorInfo
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="40dp"></com.example.firecommandandcontrolsystem.myClass.FloorInfo>
+        </FrameLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

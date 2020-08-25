@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colormainbg"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/masterMenu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stateHeight"
+        android:background="@color/colorStates">
+
+        <TextView
+            android:id="@+id/systemName"
+            android:layout_width="@dimen/leftRightContentWidth"
+            android:layout_height="match_parent"
+            android:text="ESR应急救援系统"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:textSize="@dimen/fontsize_0"
+            android:textColor="#dd780b">
+        </TextView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listview_mastermenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/leftRightContentWidth">
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </RelativeLayout>
+
+
+    <include
+        layout="@layout/main_content">
+    </include>
+
+    <RelativeLayout
+        android:id="@+id/statebar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/stateHeight"
+        android:background="@color/colorStates"
+        android:layout_alignParentBottom="true">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="45d6a4sd654a5d64s5a6dasdasd"
+            android:gravity="center">
+
+        </TextView>
+    </RelativeLayout>
+</RelativeLayout>

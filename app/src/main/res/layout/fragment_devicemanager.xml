@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_devicemanager"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colormainbg"
+    >
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@mipmap/shebeiguanli_beijing">
+        <TextView
+            android:id="@+id/terminal_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/fontsize_3"
+            android:textColor="@color/fontcolor_dep2"
+            android:layout_marginTop="18dp"
+            android:gravity="center_horizontal"
+            android:text="终端列表">
+
+        </TextView>
+
+        <LinearLayout
+            android:id="@+id/terminal_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/terminal_title">
+            <TextView
+                android:id="@+id/terminal_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/fontsize_4"
+                android:textColor="@android:color/white"
+                android:layout_marginVertical="10dp"
+                android:gravity="center"
+                android:text="终端编号"
+                ></TextView>
+            <TextView
+                android:id="@+id/terminal_bindfiremen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/fontsize_4"
+                android:textColor="@android:color/white"
+                android:layout_marginVertical="10dp"
+                android:text="绑定人员"
+                android:gravity="center">
+            </TextView>
+            <TextView
+                android:id="@+id/terminal_trackcolor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/fontsize_4"
+                android:textColor="@android:color/white"
+                android:layout_marginVertical="10dp"
+                android:text="轨迹颜色"
+                android:gravity="center">
+            </TextView>
+
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/terminallistview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/terminal_head"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="15dp"
+            >
+        </androidx.recyclerview.widget.RecyclerView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@mipmap/shebeiguanli_beijing">
+        <TextView
+            android:id="@+id/firemen_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/fontsize_3"
+            android:textColor="@color/fontcolor_dep2"
+            android:layout_marginTop="18dp"
+            android:gravity="center_horizontal"
+            android:text="人员列表">
+        </TextView>
+
+        <LinearLayout
+            android:id="@+id/firemen_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_below="@+id/firemen_title">
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/fontsize_4"
+                android:textColor="@android:color/white"
+                android:layout_marginVertical="10dp"
+                android:text="名字"
+                android:gravity="center_horizontal"
+                ></TextView>
+            <TextView
+                android:id="@+id/deviceId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/fontsize_4"
+                android:textColor="@android:color/white"
+                android:layout_marginVertical="10dp"
+                android:gravity="center_horizontal"
+                android:text="设备ID">
+            </TextView>
+            <TextView
+                android:id="@+id/group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/fontsize_4"
+                android:textColor="@android:color/white"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:text="班组">
+            </TextView>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_below="@+id/firemen_head"
+            android:id="@+id/firemenlistview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginBottom="40dp"
+            >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>

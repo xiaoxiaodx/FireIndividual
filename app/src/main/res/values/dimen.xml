@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="stateHeight">70dp</dimen><!--顶部主菜单高度 和底部状态栏高度-->
+    <dimen name="leftRightContentWidth">300dp</dimen><!--    左右菜单的宽度-->
+
+
+    <!--    主菜单-->
+    <dimen name="mastermenuWidth">180dp</dimen>
+    <dimen name="mastermenuImgW">30dp</dimen>
+    <dimen name="mastermenuImgH">30dp</dimen>
+    <dimen name="mastermenuFontSize">22sp</dimen>
+
+    <!--    左边栏 菜单-->
+    <dimen name="controlBtnImgWidth">28dp</dimen>
+    <dimen name="controlBtnImgHeight">28dp</dimen>
+    <dimen name="controlBtnFontSize">17sp</dimen>
+    <dimen name="controlBtnWidth">105dp</dimen>
+    <dimen name="controlBtnHeight">85dp</dimen>
+
+
+
+
+    <dimen name="imgSize_1">30dp</dimen>
+    <dimen name="fontsize_0">30sp</dimen>
+    <dimen name="fontsize_1">22sp</dimen>
+    <dimen name="fontsize_2">20sp</dimen>
+    <dimen name="fontsize_3">19sp</dimen>
+    <dimen name="fontsize_4">16sp</dimen>
+    <dimen name="fontsize_5">15sp</dimen>
+</resources>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colormainbg">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="1"
+        android:background="@mipmap/shebeiguanli_beijing">
+
+        <TextView
+            android:id="@+id/floor_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center_horizontal"
+            android:text="楼层配置"
+            android:textColor="@color/fontcolor_dep2"
+            android:textSize="@dimen/fontsize_3">
+
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/floor_title"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="30dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="一楼层高："
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4">
+                </TextView>
+
+                <EditText
+                    android:id="@+id/topfirst_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontsize_4"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="40dp"
+                    android:textColor="@color/fontcolor_dep1"></EditText>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="负一楼层高："
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4">
+                </TextView>
+
+                <EditText
+                    android:id="@+id/lowfirst_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontsize_4"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/fontcolor_dep1"></EditText>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="30dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="二楼以上层高："
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4">
+
+                </TextView>
+
+                <EditText
+                    android:id="@+id/top_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontsize_4"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/fontcolor_dep1">
+
+                </EditText>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="负二楼以下层高："
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4">
+
+                </TextView>
+
+                <EditText
+                    android:id="@+id/low_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontsize_4"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/fontcolor_dep1">
+
+                </EditText>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="150dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/cancel"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/fontsize_4"
+                android:layout_alignParentLeft="true"
+                android:text="取消">
+            </Button>
+
+            <Button
+                android:id="@+id/floor_set"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/ensure"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/fontsize_4"
+                android:layout_alignParentRight="true"
+                android:text="确定">
+            </Button>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/floor_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center_horizontal"
+            android:text="消息提示"
+            android:textColor="@color/fontcolor_dep2"
+            android:textSize="@dimen/fontsize_3"></TextView>
+    </RelativeLayout>
+
+
+</LinearLayout>

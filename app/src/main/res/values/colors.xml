@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+
+
+    <color name="colormainbg">#06253a</color>
+    <color name="colorStates">#022e49</color>
+    <color name="mastermenu">#138c9f</color>
+    <color name="mastermenu_select">#1ed3f2</color>
+
+    <color name="itembg">#063859</color>
+    <color name="itemselct1">#02e5f8</color>
+    <color name="leftmenubg_common">#011a43</color>
+
+    <color name="fontcolor_common">#c6dbff</color>
+    <color name="fontcolor_dep1">#9ed6f9</color>
+    <color name="fontcolor_dep2">#02eaf8</color>
+    <color name="fontcolor_dep3">#06fbfe</color>
+
+
+</resources>

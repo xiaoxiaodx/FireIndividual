@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colormainbg"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:background="@mipmap/shebeiguanli_beijing">
+
+            <TextView
+                android:id="@+id/adhoc_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingHorizontal="5dp"
+                android:layout_centerHorizontal="true"
+                android:text="自组网连接"
+                android:background="@color/colorStates"
+                android:textColor="@color/fontcolor_dep2"
+                android:textSize="@dimen/fontsize_3">
+            </TextView>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/adhoc_title"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="基站ip："
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4"></TextView>
+
+                <EditText
+                    android:id="@+id/jizhan_ip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/fontcolor_dep1"
+                    android:maxLines="1"
+                    android:textSize="@dimen/fontsize_4"></EditText>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="端口："
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4"></TextView>
+
+                <EditText
+                    android:id="@+id/jizhan_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/fontcolor_dep1"
+                    android:maxLines="1"
+                    android:textSize="@dimen/fontsize_4"></EditText>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_jizhan_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/ensure"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/fontsize_4"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="30dp"
+                android:text="连接">
+            </Button>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:background="@mipmap/shebeiguanli_beijing">
+
+            <TextView
+                android:id="@+id/cloud_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingHorizontal="5dp"
+                android:layout_centerHorizontal="true"
+                android:text="云端连接"
+                android:background="@color/colorStates"
+                android:textColor="@color/fontcolor_dep2"
+                android:textSize="@dimen/fontsize_3">
+
+            </TextView>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="30dp"
+                android:layout_weight="1"
+                android:layout_below="@+id/cloud_title"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="服务器ip："
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4"></TextView>
+
+                <EditText
+                    android:id="@+id/cloud_ip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/fontcolor_dep1"
+                    android:textSize="@dimen/fontsize_4"></EditText>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="端口："
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4"></TextView>
+
+                <EditText
+                    android:id="@+id/cloud_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/fontcolor_dep1"
+                    android:textSize="@dimen/fontsize_4"></EditText>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_cloud_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/ensure"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/fontsize_4"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="30dp"
+                android:text="连接">
+            </Button>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/floor_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center_horizontal"
+            android:text="消息提示"
+            android:textColor="@color/fontcolor_dep2"
+            android:textSize="@dimen/fontsize_3"></TextView>
+    </RelativeLayout>
+
+
+</LinearLayout>
