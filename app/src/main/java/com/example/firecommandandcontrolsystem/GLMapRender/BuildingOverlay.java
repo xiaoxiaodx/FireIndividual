@@ -73,7 +73,50 @@ public class BuildingOverlay {
             10000, -10000, 40000,
             10000, 10000, 40000,
             -10000, 10000, 40000,
+
+            -10000, -10000, 50000,
+            10000, -10000, 50000,
+            10000, 10000, 50000,
+            -10000, 10000, 50000,
+
+            -10000, -10000, 60000,
+            10000, -10000, 60000,
+            10000, 10000, 60000,
+            -10000, 10000, 60000,
     };
+
+    float[] textureData = {
+            0.0f, 1.0f, 0.1f,
+            1.0f, 1.0f, 0.1f,
+            1.0f, 0.0f, 0.1f,
+            0.0f, 0.0f, 0.1f,
+
+            0.0f, 1.0f, 0.2f,
+            1.0f, 1.0f, 0.2f,
+            1.0f, 0.0f, 0.2f,
+            0.0f, 0.0f, 0.2f,
+
+            0.0f, 1.0f, 0.3f,
+            1.0f, 1.0f, 0.3f,
+            1.0f, 0.0f, 0.3f,
+            0.0f, 0.0f, 0.3f,
+
+            0.0f, 1.0f, 0.4f,
+            1.0f, 1.0f, 0.4f,
+            1.0f, 0.0f, 0.4f,
+            0.0f, 0.0f, 0.4f,
+
+            0.0f, 1.0f, 0.5f,
+            1.0f, 1.0f, 0.5f,
+            1.0f, 0.0f, 0.5f,
+            0.0f, 0.0f, 0.5f,
+
+            0.0f, 1.0f, 0.6f,
+            1.0f, 1.0f, 0.6f,
+            1.0f, 0.0f, 0.6f,
+            0.0f, 0.0f, 0.6f,
+    };
+
 
     short indices[] = {
             0, 1, 2,
@@ -82,21 +125,29 @@ public class BuildingOverlay {
             4, 5, 6,
             6, 7, 4,
 
-            3, 0, 8,
-            3, 11, 8,
-
             8, 9, 10,
             10, 11, 8,
-
-            1, 2, 9,
-            2, 9, 10,
-
-            2, 3, 10,
-            3, 10, 11,
 
             12, 13, 14,
             14, 15, 12,
 
+            16,17,18,
+            18,19,16,
+
+            20,21,22,
+            22,23,20,
+
+            0, 1, 21,
+            20, 21, 0,
+
+            1, 2, 22,
+            21, 22, 1,
+
+            2, 3, 23,
+            22, 23, 2,
+
+            3, 0, 20,
+            23, 20, 3
     };
 
     //
@@ -117,27 +168,7 @@ public class BuildingOverlay {
             1f, 1f, 1f, 1f, // vertex 7
     };
 
-    float[] textureData = {
-            0.0f, 1.0f, 0,
-            1.0f, 1.0f, 0,
-            1.0f, 0.0f, 0,
-            0.0f, 0.0f, 0,
 
-            0.0f, 1.0f, 0.1f,
-            1.0f, 1.0f, 0.1f,
-            1.0f, 0.0f, 0.1f,
-            0.0f, 0.0f, 0.1f,
-
-            0.0f, 1.0f, 0.2f,
-            1.0f, 1.0f, 0.2f,
-            1.0f, 0.0f, 0.2f,
-            0.0f, 0.0f, 0.2f,
-
-            0.0f, 1.0f, 0.3f,
-            1.0f, 1.0f, 0.3f,
-            1.0f, 0.0f, 0.3f,
-            0.0f, 0.0f, 0.3f,
-    };
 
 
     AMap aMap;
@@ -172,9 +203,9 @@ public class BuildingOverlay {
         PointF glrighttop = aMap.getProjection().toOpenGLLocation(righttop);
         PointF glrightbottom = aMap.getProjection().toOpenGLLocation(rightbottom);
 
-
-
-        for (int i = 0; i < floorLevelInfoList.size(); i++) {
+        //添加平面楼层纹理
+        int i = 0;
+        for (; i < floorLevelInfoList.size(); i++) {
 
             FloorLevelInfo floorLevelInfo = floorLevelInfoList.get(i);
 
@@ -194,6 +225,17 @@ public class BuildingOverlay {
             addFloatInindexList((short) indexstart);
         }
 
+//        上下2个面的顶点，方便绘制侧面
+//        addFloatInInverticesList(gllefttop, glleftbottom, glrighttop, glrightbottom, 0);
+//        addFloatTextureInverticesList(0);
+//
+//        addFloatInInverticesList(gllefttop, glleftbottom, glrighttop, glrightbottom, floorLevelInfoList.get(floorLevelInfoList.size()-1).height*500);
+//        addFloatTextureInverticesList(0);
+
+
+
+        addFloatInindexList1((short) ((i-1)* 4));
+
         Log.e("teset","v:"+verticesList.toString());
         Log.e("teset","t:"+textureverticesList.toString());
         Log.e("teset","i:"+indexverticesList.toString());
@@ -201,17 +243,44 @@ public class BuildingOverlay {
         updateVertexBuff();
     }
 
+    //侧面，默认是连续的2个平面,每个平面4个点
+    private void addFloatInindexList1(short indexstart)
+    {
+
+        short bottomstart = 0;
+        short topstart = indexstart;
+
+        for(int i=0;i<4;i++){
+
+            indexverticesList.add((short) (bottomstart + i));
+            if(i == 3) {
+                indexverticesList.add((short) (bottomstart ));
+                indexverticesList.add((short) (topstart ));
+            }else{
+                indexverticesList.add((short) (bottomstart + i + 1));
+                indexverticesList.add((short) (topstart + i + 1));
+            }
+            indexverticesList.add((short) (topstart + i));
+            if(i==3){
+                indexverticesList.add((short) (topstart ));
+            }else{
+                indexverticesList.add((short) (topstart + i+1));
+            }
+            indexverticesList.add((short) (bottomstart + i));
+        }
+    }
+
     //只管水平面的  不管侧面
     private void addFloatInindexList(short indexstart) {
-
         //2个3角行
         indexverticesList.add(indexstart);
         indexverticesList.add((short) (indexstart + 1));
         indexverticesList.add((short) (indexstart + 2));
 
-        indexverticesList.add((short) (indexstart));
+
         indexverticesList.add((short) (indexstart + 2));
         indexverticesList.add((short) (indexstart + 3));
+        indexverticesList.add((short) (indexstart));
     }
 
     private void addFloatInInverticesList(PointF lt, PointF lb, PointF rt, PointF rb, float height) {
@@ -252,6 +321,26 @@ public class BuildingOverlay {
 
 
     private void updateVertexBuff() {
+        //index
+//        indexBuffer = ByteBuffer.allocateDirect(indices.length * 4)
+//                .order(ByteOrder.nativeOrder())
+//                .asShortBuffer();
+//        indexBuffer.clear();
+//        indexBuffer.put(indices);
+//        indexBuffer.position(0);
+//        //texture
+//        textureBuffer = ByteBuffer.allocateDirect(textureData.length * 4)
+//                .order(ByteOrder.nativeOrder())
+//                .asFloatBuffer();
+//        textureBuffer.put(textureData);
+//        textureBuffer.position(0);
+//
+//        vertextBuffer = ByteBuffer.allocateDirect(vertex.length * 4)
+//                .order(ByteOrder.nativeOrder())
+//                .asFloatBuffer();
+//        vertextBuffer.clear();
+//        vertextBuffer.put(vertex);
+//        vertextBuffer.position(0);
 
         //index
         indexBuffer = ByteBuffer.allocateDirect(indexverticesList.size() * 4)
@@ -280,6 +369,7 @@ public class BuildingOverlay {
             vertextBuffer.put(f);
         }
         vertextBuffer.position(0);
+
     }
 
 
@@ -324,7 +414,7 @@ public class BuildingOverlay {
                 "           gl_FragColor = texture2D(sTexture5, vec2(v_texPo));\n" +
                 "           }\n" +
                 "           else{\n" +
-                "               gl_FragColor = aColor;\n" +
+                "               gl_FragColor = vec4(0,0,1,0.3);\n" +
                 "           }\n" +
                 "        }";
 

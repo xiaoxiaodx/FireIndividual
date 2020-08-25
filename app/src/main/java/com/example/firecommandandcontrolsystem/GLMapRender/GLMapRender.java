@@ -8,6 +8,7 @@ import android.opengl.Matrix;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.CoordinateConverter;
 import com.amap.api.maps.CustomRenderer;
 import com.amap.api.maps.model.LatLng;
 import com.example.firecommandandcontrolsystem.R;
@@ -15,6 +16,8 @@ import com.example.firecommandandcontrolsystem.fragment.ShowGlobalMap;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import static com.amap.api.maps.model.BitmapDescriptorFactory.getContext;
 
 public class GLMapRender implements CustomRenderer {
 
@@ -67,22 +70,32 @@ public class GLMapRender implements CustomRenderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         //创建cube
-        cube = new BuildingOverlay(aMap,new LatLng(28.21149245890368,112.87748234731855),
-                new LatLng(28.211270510430364,112.87755440532865),
-                new LatLng(28.21165090324281,112.87805965348026),
-                new LatLng(28.21140894759759,112.8781247075325));
+        cube = new BuildingOverlay(aMap,gps2gaode(new LatLng(28.21149245890368,112.87748234731855)),
+                gps2gaode(new LatLng(28.211270510430364,112.87755440532865)),
+                        gps2gaode(new LatLng(28.21165090324281,112.87805965348026)),
+                                gps2gaode(new LatLng(28.21140894759759,112.8781247075325)));
 
 
-        cube.addFloorInfoInBuilding(1,0, loadImgBitmap(R.mipmap.jiuyuan),new float[]{1f,1f,0f,0f});
-        cube.addFloorInfoInBuilding(2,1, loadImgBitmap(R.mipmap.map3d),new float[]{1f,1f,0f,0f});
-        cube.addFloorInfoInBuilding(3,2, loadImgBitmap(R.mipmap.bj),new float[]{1f,1f,0f,0f});
-        cube.addFloorInfoInBuilding(4,3, loadImgBitmap(R.mipmap.baojingrenshu),new float[]{1f,1f,0f,0f});
-        cube.addFloorInfoInBuilding(5,4, loadImgBitmap(R.mipmap.arrow),new float[]{1f,1f,0f,0f});
-        cube.addFloorInfoInBuilding(6,5, loadImgBitmap(R.mipmap.marker_1),new float[]{1f,1f,0f,0f});
-
+        cube.addFloorInfoInBuilding(1,0, loadImgBitmap(R.mipmap.indoor1234),new float[]{1f,1f,0f,0f});
+        cube.addFloorInfoInBuilding(2,1, loadImgBitmap(R.mipmap.indoor1234),new float[]{1f,1f,0f,0f});
+        cube.addFloorInfoInBuilding(3,2, loadImgBitmap(R.mipmap.indoor1234),new float[]{1f,1f,0f,0f});
+        cube.addFloorInfoInBuilding(4,3, loadImgBitmap(R.mipmap.indoor1234),new float[]{1f,1f,0f,0f});
+        cube.addFloorInfoInBuilding(5,4, loadImgBitmap(R.mipmap.indoor1234),new float[]{1f,1f,0f,0f});
+        cube.addFloorInfoInBuilding(6,5, loadImgBitmap(R.mipmap.indoor1234),new float[]{1f,1f,0f,0f});
      //   cube.updateVertexPostion();
 
         cube.initShader();
+    }
+
+    private LatLng gps2gaode(LatLng latlng) {
+        CoordinateConverter converter = new CoordinateConverter(getContext());
+        // CoordType.GPS 待转换坐标类型
+        converter.from(CoordinateConverter.CoordType.GPS);
+        // sourceLatLng待转换坐标点 LatLng类型
+        converter.coord(latlng);
+        // 执行转换操作
+        LatLng desLatLng = converter.convert();
+        return desLatLng;
     }
 
     @Override
