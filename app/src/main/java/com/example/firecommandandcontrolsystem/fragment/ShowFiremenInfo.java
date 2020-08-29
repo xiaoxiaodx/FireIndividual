@@ -9,10 +9,7 @@ import android.widget.GridView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.firecommandandcontrolsystem.Adapter.FiremenAdapter;
 import com.example.firecommandandcontrolsystem.Adapter.FiremenDeviceAdapter;
 import com.example.firecommandandcontrolsystem.R;
 import com.example.firecommandandcontrolsystem.myClass.DataApplication;

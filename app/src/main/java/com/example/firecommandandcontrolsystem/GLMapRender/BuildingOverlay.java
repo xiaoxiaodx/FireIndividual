@@ -5,19 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
-import android.opengl.Matrix;
-import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
-
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.CustomRenderer;
 import com.amap.api.maps.model.LatLng;
-import com.example.firecommandandcontrolsystem.fragment.ShowGlobalMap;
-import com.example.firecommandandcontrolsystem.myClass.DataApplication;
-import com.example.firecommandandcontrolsystem.opengl.Line3D;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -26,17 +17,12 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES10.GL_BLEND;
-import static android.opengl.GLES10.glTexParameterx;
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static android.opengl.GLES20.glGenTextures;
-import static android.opengl.GLES20.glUniform1i;
 import static javax.microedition.khronos.opengles.GL10.GL_LIGHTING;
 import static javax.microedition.khronos.opengles.GL10.GL_ONE_MINUS_SRC_ALPHA;
 import static javax.microedition.khronos.opengles.GL10.GL_SRC_ALPHA;
@@ -51,122 +37,122 @@ public class BuildingOverlay {
     ArrayList<Float> verticesList = new ArrayList<Float>();
     ArrayList<Float> textureverticesList = new ArrayList<Float>();
     ArrayList<Short> indexverticesList = new ArrayList<Short>();
-
-    float vertex[] = {
-            -10000, -10000, 0,
-            10000, -10000, 0,
-            10000, 10000, 0,
-            -10000, 10000, 0,
-
-            -10000, -10000, 10000,
-            10000, -10000, 10000,
-            10000, 10000, 10000,
-            -10000, 10000, 10000,
-
-
-            -10000, -10000, 20000,
-            10000, -10000, 20000,
-            10000, 10000, 20000,
-            -10000, 10000, 20000,
-
-            -10000, -10000, 40000,
-            10000, -10000, 40000,
-            10000, 10000, 40000,
-            -10000, 10000, 40000,
-
-            -10000, -10000, 50000,
-            10000, -10000, 50000,
-            10000, 10000, 50000,
-            -10000, 10000, 50000,
-
-            -10000, -10000, 60000,
-            10000, -10000, 60000,
-            10000, 10000, 60000,
-            -10000, 10000, 60000,
-    };
-
-    float[] textureData = {
-            0.0f, 1.0f, 0.1f,
-            1.0f, 1.0f, 0.1f,
-            1.0f, 0.0f, 0.1f,
-            0.0f, 0.0f, 0.1f,
-
-            0.0f, 1.0f, 0.2f,
-            1.0f, 1.0f, 0.2f,
-            1.0f, 0.0f, 0.2f,
-            0.0f, 0.0f, 0.2f,
-
-            0.0f, 1.0f, 0.3f,
-            1.0f, 1.0f, 0.3f,
-            1.0f, 0.0f, 0.3f,
-            0.0f, 0.0f, 0.3f,
-
-            0.0f, 1.0f, 0.4f,
-            1.0f, 1.0f, 0.4f,
-            1.0f, 0.0f, 0.4f,
-            0.0f, 0.0f, 0.4f,
-
-            0.0f, 1.0f, 0.5f,
-            1.0f, 1.0f, 0.5f,
-            1.0f, 0.0f, 0.5f,
-            0.0f, 0.0f, 0.5f,
-
-            0.0f, 1.0f, 0.6f,
-            1.0f, 1.0f, 0.6f,
-            1.0f, 0.0f, 0.6f,
-            0.0f, 0.0f, 0.6f,
-    };
-
-
-    short indices[] = {
-            0, 1, 2,
-            2, 3, 0,
-
-            4, 5, 6,
-            6, 7, 4,
-
-            8, 9, 10,
-            10, 11, 8,
-
-            12, 13, 14,
-            14, 15, 12,
-
-            16,17,18,
-            18,19,16,
-
-            20,21,22,
-            22,23,20,
-
-            0, 1, 21,
-            20, 21, 0,
-
-            1, 2, 22,
-            21, 22, 1,
-
-            2, 3, 23,
-            22, 23, 2,
-
-            3, 0, 20,
-            23, 20, 3
-    };
-
-    //
-    float[] colors = {
-            1f, 0f, 0f, 1f, // vertex 0 red
-            0f, 1f, 0f, 1f, // vertex 1 green
-            0f, 0f, 1f, 1f, // vertex 2 blue
-            1f, 1f, 0f, 1f, // vertex 3
-
-            0f, 1f, 1f, 0f, // vertex 4
-            1f, 0f, 1f, 0f, // vertex 5
-            0f, 0f, 0f, 0f, // vertex 6
-            1f, 1f, 1f, 0f, // vertex 7
-
-            0f, 1f, 1f, 1f, // vertex 4
-            1f, 0f, 1f, 1f, // vertex 5
-            0f, 0f, 0f, 1f, // vertex 6
-            1f, 1f, 1f, 1f, // vertex 7
-    };
+//
+//    float vertex[] = {
+//            -10000, -10000, 0,
+//            10000, -10000, 0,
+//            10000, 10000, 0,
+//            -10000, 10000, 0,
+//
+//            -10000, -10000, 10000,
+//            10000, -10000, 10000,
+//            10000, 10000, 10000,
+//            -10000, 10000, 10000,
+//
+//
+//            -10000, -10000, 20000,
+//            10000, -10000, 20000,
+//            10000, 10000, 20000,
+//            -10000, 10000, 20000,
+//
+//            -10000, -10000, 40000,
+//            10000, -10000, 40000,
+//            10000, 10000, 40000,
+//            -10000, 10000, 40000,
+//
+//            -10000, -10000, 50000,
+//            10000, -10000, 50000,
+//            10000, 10000, 50000,
+//            -10000, 10000, 50000,
+//
+//            -10000, -10000, 60000,
+//            10000, -10000, 60000,
+//            10000, 10000, 60000,
+//            -10000, 10000, 60000,
+//    };
+//
+//    float[] textureData = {
+//            0.0f, 1.0f, 0.1f,
+//            1.0f, 1.0f, 0.1f,
+//            1.0f, 0.0f, 0.1f,
+//            0.0f, 0.0f, 0.1f,
+//
+//            0.0f, 1.0f, 0.2f,
+//            1.0f, 1.0f, 0.2f,
+//            1.0f, 0.0f, 0.2f,
+//            0.0f, 0.0f, 0.2f,
+//
+//            0.0f, 1.0f, 0.3f,
+//            1.0f, 1.0f, 0.3f,
+//            1.0f, 0.0f, 0.3f,
+//            0.0f, 0.0f, 0.3f,
+//
+//            0.0f, 1.0f, 0.4f,
+//            1.0f, 1.0f, 0.4f,
+//            1.0f, 0.0f, 0.4f,
+//            0.0f, 0.0f, 0.4f,
+//
+//            0.0f, 1.0f, 0.5f,
+//            1.0f, 1.0f, 0.5f,
+//            1.0f, 0.0f, 0.5f,
+//            0.0f, 0.0f, 0.5f,
+//
+//            0.0f, 1.0f, 0.6f,
+//            1.0f, 1.0f, 0.6f,
+//            1.0f, 0.0f, 0.6f,
+//            0.0f, 0.0f, 0.6f,
+//    };
+//
+//
+//    short indices[] = {
+//            0, 1, 2,
+//            2, 3, 0,
+//
+//            4, 5, 6,
+//            6, 7, 4,
+//
+//            8, 9, 10,
+//            10, 11, 8,
+//
+//            12, 13, 14,
+//            14, 15, 12,
+//
+//            16,17,18,
+//            18,19,16,
+//
+//            20,21,22,
+//            22,23,20,
+//
+//            0, 1, 21,
+//            20, 21, 0,
+//
+//            1, 2, 22,
+//            21, 22, 1,
+//
+//            2, 3, 23,
+//            22, 23, 2,
+//
+//            3, 0, 20,
+//            23, 20, 3
+//    };
+//
+//
+//    float[] colors = {
+//            1f, 0f, 0f, 1f, // vertex 0 red
+//            0f, 1f, 0f, 1f, // vertex 1 green
+//            0f, 0f, 1f, 1f, // vertex 2 blue
+//            1f, 1f, 0f, 1f, // vertex 3
+//
+//            0f, 1f, 1f, 0f, // vertex 4
+//            1f, 0f, 1f, 0f, // vertex 5
+//            0f, 0f, 0f, 0f, // vertex 6
+//            1f, 1f, 1f, 0f, // vertex 7
+//
+//            0f, 1f, 1f, 1f, // vertex 4
+//            1f, 0f, 1f, 1f, // vertex 5
+//            0f, 0f, 0f, 1f, // vertex 6
+//            1f, 1f, 1f, 1f, // vertex 7
+//    };
 
 
 
@@ -179,6 +165,7 @@ public class BuildingOverlay {
         this.leftbottom = leftbottom;
         this.righttop = righttop;
         this.rightbottom = rightbottom;
+
 
 //        updateVertexBuff();
     }
@@ -210,7 +197,7 @@ public class BuildingOverlay {
             FloorLevelInfo floorLevelInfo = floorLevelInfoList.get(i);
 
             int glfloor = floorLevelInfo.floor;
-            float glheight = floorLevelInfo.height * 500;
+            float glheight = floorLevelInfo.height * GLMapRender.heightRadio;
 
             //先添加顶点坐标，为了更好的绘制纹理,该顶点数据不包含上下2个平面的顶点
             addFloatInInverticesList(gllefttop, glleftbottom, glrighttop, glrightbottom, glheight);
@@ -236,9 +223,9 @@ public class BuildingOverlay {
 
         addFloatInindexList1((short) ((i-1)* 4));
 
-        Log.e("teset","v:"+verticesList.toString());
-        Log.e("teset","t:"+textureverticesList.toString());
-        Log.e("teset","i:"+indexverticesList.toString());
+//        Log.e("teset","v:"+verticesList.toString());
+//        Log.e("teset","t:"+textureverticesList.toString());
+//        Log.e("teset","i:"+indexverticesList.toString());
 
         updateVertexBuff();
     }
@@ -321,27 +308,6 @@ public class BuildingOverlay {
 
 
     private void updateVertexBuff() {
-        //index
-//        indexBuffer = ByteBuffer.allocateDirect(indices.length * 4)
-//                .order(ByteOrder.nativeOrder())
-//                .asShortBuffer();
-//        indexBuffer.clear();
-//        indexBuffer.put(indices);
-//        indexBuffer.position(0);
-//        //texture
-//        textureBuffer = ByteBuffer.allocateDirect(textureData.length * 4)
-//                .order(ByteOrder.nativeOrder())
-//                .asFloatBuffer();
-//        textureBuffer.put(textureData);
-//        textureBuffer.position(0);
-//
-//        vertextBuffer = ByteBuffer.allocateDirect(vertex.length * 4)
-//                .order(ByteOrder.nativeOrder())
-//                .asFloatBuffer();
-//        vertextBuffer.clear();
-//        vertextBuffer.put(vertex);
-//        vertextBuffer.position(0);
-
         //index
         indexBuffer = ByteBuffer.allocateDirect(indexverticesList.size() * 4)
                 .order(ByteOrder.nativeOrder())
@@ -477,6 +443,8 @@ public class BuildingOverlay {
 
     public void drawES20(float[] mvp) {
 
+        if(shader == null)
+            return;
         GLES20.glUseProgram(shader.program);
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -528,7 +496,7 @@ public class BuildingOverlay {
 
         GLES20.glUniformMatrix4fv(shader.aMVPMatrix, 1, false, mvp, 0);
 
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indices.length, GLES20.GL_UNSIGNED_SHORT, indexBuffer);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indexverticesList.size(), GLES20.GL_UNSIGNED_SHORT, indexBuffer);
         GLES20.glDisableVertexAttribArray(shader.aVertex);
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);

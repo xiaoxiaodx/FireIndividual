@@ -1,32 +1,22 @@
 package com.example.firecommandandcontrolsystem.opengl;
 
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.PointF;
-import android.opengl.EGL14;
-import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.os.Build;
-import android.util.Log;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.RequiresApi;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.CustomRenderer;
 import com.amap.api.maps.model.LatLng;
-import com.example.firecommandandcontrolsystem.R;
+import com.example.firecommandandcontrolsystem.GLMapRender.Line3D;
 import com.example.firecommandandcontrolsystem.myClass.DataApplication;
-import com.example.firecommandandcontrolsystem.myClass.Firemen;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 public class CubeMapRender implements CustomRenderer {

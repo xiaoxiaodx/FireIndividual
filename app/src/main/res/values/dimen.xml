@@ -15,6 +15,7 @@
     <dimen name="controlBtnImgWidth">28dp</dimen>
     <dimen name="controlBtnImgHeight">28dp</dimen>
     <dimen name="controlBtnFontSize">17sp</dimen>
+    <dimen name="controlBtnFontSize1">20sp</dimen>
     <dimen name="controlBtnWidth">105dp</dimen>
     <dimen name="controlBtnHeight">85dp</dimen>
 

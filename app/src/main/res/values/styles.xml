@@ -8,4 +8,36 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="colorRadioBtnTheme1" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color1</item>
+    </style>
+    <style name="colorRadioBtnTheme2" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color2</item>
+    </style>
+    <style name="colorRadioBtnTheme3" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color3</item>
+    </style>
+    <style name="colorRadioBtnTheme4" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color4</item>
+    </style>
+    <style name="colorRadioBtnTheme5" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color5</item>
+    </style>
+    <style name="colorRadioBtnTheme6" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color6</item>
+    </style>
+    <style name="colorRadioBtnTheme7" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color7</item>
+    </style>
+    <style name="colorRadioBtnTheme8" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color8</item>
+    </style>
+    <style name="colorRadioBtnTheme9" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color9</item>
+    </style>
+    <style name="colorRadioBtnTheme10" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_color10</item>
+    </style>
+
 </resources>

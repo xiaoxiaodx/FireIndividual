@@ -57,6 +57,8 @@
                     android:textSize="@dimen/fontsize_4"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="40dp"
+                    android:inputType="numberDecimal"
+                    android:lines="1"
                     android:textColor="@color/fontcolor_dep1"></EditText>
                 <TextView
                     android:layout_width="wrap_content"
@@ -73,6 +75,8 @@
                     android:textSize="@dimen/fontsize_4"
                     android:layout_marginRight="40dp"
                     android:layout_marginTop="10dp"
+                    android:inputType="numberDecimal"
+                    android:lines="1"
                     android:textColor="@color/fontcolor_dep1"></EditText>
 
             </LinearLayout>
@@ -89,7 +93,9 @@
                     android:layout_height="wrap_content"
                     android:text="二楼以上层高："
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/fontsize_4">
+                    android:textSize="@dimen/fontsize_4"
+                    android:inputType="numberDecimal"
+                    android:lines="1">
 
                 </TextView>
 
@@ -100,7 +106,9 @@
                     android:textSize="@dimen/fontsize_4"
                     android:layout_marginRight="40dp"
                     android:layout_marginTop="10dp"
-                    android:textColor="@color/fontcolor_dep1">
+                    android:textColor="@color/fontcolor_dep1"
+                    android:inputType="numberDecimal"
+                    android:lines="1">
 
                 </EditText>
                 <TextView
@@ -119,7 +127,9 @@
                     android:textSize="@dimen/fontsize_4"
                     android:layout_marginRight="40dp"
                     android:layout_marginTop="10dp"
-                    android:textColor="@color/fontcolor_dep1">
+                    android:textColor="@color/fontcolor_dep1"
+                    android:inputType="numberDecimal"
+                    android:lines="1">
 
                 </EditText>
 
@@ -136,6 +146,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@mipmap/cancel"
+                android:layout_centerVertical="true"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/fontsize_4"
                 android:layout_alignParentLeft="true"
@@ -147,6 +158,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@mipmap/ensure"
+                android:layout_centerVertical="true"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/fontsize_4"
                 android:layout_alignParentRight="true"

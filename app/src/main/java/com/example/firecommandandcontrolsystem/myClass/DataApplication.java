@@ -30,9 +30,14 @@ public class DataApplication extends Application {
     public int firemenInfo_retreat_curSelectIndex = -1;
 
     //设备管理
-    public int deviceManagerCurSelectIndex = 0;
+    public int deviceManagerCurSelectIndex = -1;
     public int deviceManager_firmenlist_curSelectIndex = -1;
 
+    //设备管理里面的数据
+    public List<TerminalInfo> terminalInfoList = new ArrayList<>();
+    public List<PersonInfo> personInfoList = new ArrayList<>();
+
+    //在线人员表
     public List<Firemen> listFiremen = new ArrayList<>();
     public List<Firemen> listRescue = new ArrayList<>();
     public List<Firemen> listRescued = new ArrayList<>();
@@ -182,16 +187,30 @@ public class DataApplication extends Application {
 
     }
 
-    public Firemen findFiremenFromID(int id){
+    public Firemen findFiremenFromID(int id) {
 
-        for(int i=0;i<listFiremen.size();i++){
+        for (int i = 0; i < listFiremen.size(); i++) {
 
             Firemen firemen = listFiremen.get(i);
-            if(firemen.getBindDeviceId() == id) {
+            if (firemen.getBindDeviceId() == id) {
                 return firemen;
             }
 
         }
         return null;
+    }
+
+    public class TerminalInfo {
+
+        public int number;
+        public String name;
+        public float[] color;
+
+    }
+
+    public class PersonInfo {
+        public String name;
+        public int number;
+        public String group;
     }
 }

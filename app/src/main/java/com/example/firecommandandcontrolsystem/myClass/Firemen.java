@@ -24,6 +24,7 @@ public class Firemen {
     private int floor;
     private float height;
     private int localState;
+    private boolean isShowTrack = true;
     private List<LatLng> historicalTrack = new ArrayList<>();
     private List<PointF> historicalTrackgl = new ArrayList<>();
     private List<Float> historicalHeight = new ArrayList<>();
@@ -53,6 +54,14 @@ public class Firemen {
     private boolean isSelectRescue = false;
     private boolean isSelectRescued = false;
     private boolean isSelectRetreat = false;
+
+    public boolean isShowTrack() {
+        return isShowTrack;
+    }
+
+    public void setShowTrack(boolean showTrack) {
+        isShowTrack = showTrack;
+    }
 
     public List<PointF> getHistoricalTrackgl() {
         return historicalTrackgl;

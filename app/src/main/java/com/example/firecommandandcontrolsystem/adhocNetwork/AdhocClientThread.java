@@ -192,11 +192,11 @@ public class AdhocClientThread {
         public void run()//重写run方法
         {
             Looper.prepare();
-            try {
-                outputStream = socket.getOutputStream();
 
-                if (receiHandler != null)
-                    return;
+
+
+                //outputStream = socket.getOutputStream();
+
                 receiHandler = new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
@@ -270,10 +270,7 @@ public class AdhocClientThread {
                         }
                     }
                 };
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+
             Looper.loop();// 启动 xxdc
         }
     }
@@ -285,8 +282,9 @@ public class AdhocClientThread {
 
     private void sendByteDate(byte[] bytes){
 
-        if(outputStream != null) {
+        if(socket != null) {
             try {
+                outputStream = socket.getOutputStream();
                 outputStream.write(bytes);
             } catch (IOException e) {
                 e.printStackTrace();

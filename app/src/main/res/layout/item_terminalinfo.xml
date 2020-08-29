@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/firemen_layout_item"
+    android:id="@+id/terminal_layout_item"
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/deviceId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -16,7 +16,7 @@
         android:gravity="center"
         ></TextView>
     <TextView
-        android:id="@+id/deviceId"
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -25,14 +25,13 @@
         android:layout_marginVertical="10dp"
         android:gravity="center">
     </TextView>
-    <TextView
-        android:id="@+id/group"
+    <Button
+        android:id="@+id/btncolor"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="10dp"
         android:layout_weight="1"
-        android:textSize="@dimen/fontsize_4"
-        android:textColor="@color/fontcolor_dep1"
+        android:background="@android:color/black"
         android:layout_marginVertical="10dp"
         android:gravity="center">
-    </TextView>
+    </Button>
 </LinearLayout>

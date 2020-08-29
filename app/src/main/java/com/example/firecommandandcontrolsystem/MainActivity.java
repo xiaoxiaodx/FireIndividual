@@ -9,10 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridView;
 
+import com.amap.api.maps.UiSettings;
 import com.example.firecommandandcontrolsystem.Adapter.ControlMenuAdapter;
 import com.example.firecommandandcontrolsystem.Adapter.MasterMenuAdapter;
 import com.example.firecommandandcontrolsystem.adhocNetwork.AdhocClientThread;
@@ -32,27 +31,22 @@ import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.Floor
 import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.GpsInfo;
 import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.Rescue;
 import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.Retreat;
-import com.example.firecommandandcontrolsystem.fragment.ControlDeviceManager;
-import com.example.firecommandandcontrolsystem.fragment.ControlFiremenInfo;
-import com.example.firecommandandcontrolsystem.fragment.ControlMap;
-import com.example.firecommandandcontrolsystem.fragment.ControlSystemSet;
 import com.example.firecommandandcontrolsystem.fragment.ShowCmdResuce;
 import com.example.firecommandandcontrolsystem.fragment.ShowCmdRetreat;
-import com.example.firecommandandcontrolsystem.fragment.ShowCommunicationSet;
 import com.example.firecommandandcontrolsystem.fragment.ShowDeviceManager;
 import com.example.firecommandandcontrolsystem.fragment.ShowFiremenInfo;
 import com.example.firecommandandcontrolsystem.fragment.ShowFloorSet;
-import com.example.firecommandandcontrolsystem.fragment.ShowGlobalMap;
 import com.example.firecommandandcontrolsystem.fragment.ShowIndoorMap;
 import com.example.firecommandandcontrolsystem.fragment.ShowNetSet;
-import com.example.firecommandandcontrolsystem.fragment.ShowOfflineMap;
 import com.example.firecommandandcontrolsystem.fragment.ShowRescueLocation;
 import com.example.firecommandandcontrolsystem.myClass.DataApplication;
 import com.example.firecommandandcontrolsystem.myClass.Firemen;
+import com.example.firecommandandcontrolsystem.myClass.MyMapView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import static com.amap.api.maps.AMap.MAP_TYPE_NIGHT;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
 //    private ShowDeviceManager showDeviceManager;
 //    private ShowFiremenInfo showFiremenInfo;
 
+
+    MyMapView mapView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +94,20 @@ public class MainActivity extends AppCompatActivity {
         initMasterMenu();
         initControlMenu();
 
-        replaceLeftControlMenu(0);
-        replaceMainContentFragment(new ShowGlobalMap(this));
+        mapView = (MyMapView) findViewById(R.id.gaodeMap);
+        mapView.onCreate(savedInstanceState);// 此方法必须重写
+        mapView.init3DEnvir();
 
+
+        mapView.getMap().setMapType(MAP_TYPE_NIGHT);
+
+
+
+        UiSettings uiSettings =   mapView.getMap().getUiSettings();
+        replaceLeftControlMenu(0);
+        uiSettings.setLogoBottomMargin(-50);//隐藏logo
+        uiSettings.setCompassEnabled(true);
+        uiSettings.setZoomControlsEnabled(false);
         handmessage();
 
         autoConnect();
@@ -113,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 if (adhocThread == null) {
                     adhocThread = new AdhocClientThread("39.108.105.245", 7090, 0);
 
+                    //adhocThread = new AdhocClientThread("127.0.0.0", 7090, 0);
                 }
             }
         }, 2000);
@@ -183,16 +192,19 @@ public class MainActivity extends AppCompatActivity {
 
 
                 } else if (string == "三维建模") {
-                    if(interfaceGaodeMap != null)
-                        interfaceGaodeMap.setup3Dmodel();
 
-                } else if (string == "新增") {
 
+                } else if (string == "新增设备") {
+                    if (deviceManagerinterface != null)
+                        deviceManagerinterface.newDeivece();
 
                 } else if (string == "删除选中") {
-
+                    if (deviceManagerinterface != null)
+                        deviceManagerinterface.deleteSelect();
 
                 } else if (string == "编辑选中") {
+                    if (deviceManagerinterface != null)
+                        deviceManagerinterface.editSelect();
 
 
                 } else if (string == "消息日志") {
@@ -225,16 +237,16 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void interfaceRescue(int firemenid, List<Integer> listrescue) {
 
-                            DataApplication dataApplication = (DataApplication)getApplication();
+                            DataApplication dataApplication = (DataApplication) getApplication();
                             Firemen firemen = dataApplication.findFiremenFromID(firemenid);
 
-                            Rescue rescue = new Rescue(Integer.valueOf(firemen.getBindDeviceId()),firemen.getCurLocation().latitude,firemen.getCurLocation().longitude
-                            ,firemen.getLatState(),firemen.getLngState(),firemen.getHeight(),firemen.getLocalState(),firemen.getFloor());
+                            Rescue rescue = new Rescue(Integer.valueOf(firemen.getBindDeviceId()), firemen.getCurLocation().latitude, firemen.getCurLocation().longitude
+                                    , firemen.getLatState(), firemen.getLngState(), firemen.getHeight(), firemen.getLocalState(), firemen.getFloor());
 
-                            for (int i=0;i<listrescue.size();i++)
+                            for (int i = 0; i < listrescue.size(); i++)
                                 rescue.listRescue.add(listrescue.get(i));
 
-                            send_cmd(AdhocProtocol.rescue,rescue);
+                            send_cmd(AdhocProtocol.rescue, rescue);
 
                         }
                     }));
@@ -368,10 +380,14 @@ public class MainActivity extends AppCompatActivity {
     public void maincontentSwitch(int position) {
 
         replaceLeftControlMenu(position);
+
+        mapView.setVisibility(View.INVISIBLE);
+
         switch (position) {
 
             case 0:
-                replaceMainContentFragment(new ShowGlobalMap(this));
+                if (mapView != null)
+                    mapView.setVisibility(View.VISIBLE);
                 break;
             case 1:
                 replaceMainContentFragment(new ShowRescueLocation());
@@ -392,21 +408,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.e(TAG, "楼层配置");
                     }
                 }));
-
                 break;
         }
-    }
-
-    public interface interfaceGaodeMap {
-        void setup3Dmodel();
-
-        void updateLngLat(GpsInfo info);
-    }
-
-    private interfaceGaodeMap interfaceGaodeMap;
-
-    public void setListener(interfaceGaodeMap interfacepar) {
-        this.interfaceGaodeMap = interfacepar;
     }
 
 
@@ -428,24 +431,23 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 3:
                 listcontrolmenu.clear();
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("新增", "#97b2df", "#23ecf7", R.mipmap.quanjudingwei_quanjugailan, R.mipmap.quanjudingwei_quanjugailan_s, "#011a43", R.mipmap.menu_bg_blue));
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("删除选中", "#97b2df", "#00ff00", R.mipmap.quanjudingwei_duiyuanxianshi, R.mipmap.quanjudingwei_duiyuanxianshi_s, "#011a43", R.mipmap.menu_bg_green));
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("编辑选中", "#97b2df", "#00ff00", R.mipmap.quanjudingwei_qingchuguiji, R.mipmap.quanjudingwei_qingchuguiji_s, "#011a43", R.mipmap.menu_bg_green));
-
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("新增设备", "#97b2df", "#23ecf7", R.mipmap.shebeiguanli_add, R.mipmap.shebeiguanli_add_s, "#011a43", R.mipmap.menu_bg_blue));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("编辑选中", "#97b2df", "#ff8f00", R.mipmap.shebeiguanli_edit, R.mipmap.shebeiguanli_edit_s, "#011a43", R.mipmap.menu_bg_orange));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("删除选中", "#97b2df", "#00ff00", R.mipmap.shebeiguanli_delete, R.mipmap.shebeiguanli_delete_s, "#011a43", R.mipmap.menu_bg_green));
                 break;
             case 4:
                 listcontrolmenu.clear();
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("报警信息", "#97b2df", "#23ecf7", R.mipmap.quanjudingwei_quanjugailan, R.mipmap.quanjudingwei_quanjugailan_s, "#011a43", R.mipmap.menu_bg_blue));
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("撤离指令", "#97b2df", "#00ff00", R.mipmap.quanjudingwei_duiyuanxianshi, R.mipmap.quanjudingwei_duiyuanxianshi_s, "#011a43", R.mipmap.menu_bg_green));
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("搜救指令", "#97b2df", "#00ff00", R.mipmap.quanjudingwei_qingchuguiji, R.mipmap.quanjudingwei_qingchuguiji_s, "#011a43", R.mipmap.menu_bg_green));
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("全员撤退", "#97b2df", "#ff8f00", R.mipmap.quanjudingwei_lishihuifang, R.mipmap.quanjudingwei_lishihuifang_s, "#011a43", R.mipmap.menu_bg_orange));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("报警信息", "#97b2df", "#ff0000", R.mipmap.renyuanxinxi_gaojing, R.mipmap.renyuanxinxi_gaojing_s, "#011a43", R.mipmap.menu_bg_red));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("撤离指令", "#97b2df", "#23ecf7", R.mipmap.renyuanxinxi_chetui, R.mipmap.renyuanxinxi_chetui_s, "#011a43", R.mipmap.menu_bg_blue));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("搜救指令", "#97b2df", "#ff8f00", R.mipmap.renyuanxinxi_soujiu, R.mipmap.renyuanxinxi_soujiu_s, "#011a43", R.mipmap.menu_bg_orange));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("全员撤退", "#97b2df", "#00ff00", R.mipmap.renyuanxinxi_quanyuanchetui, R.mipmap.renyuanxinxi_quanyuanchetui_s, "#011a43", R.mipmap.menu_bg_green));
                 break;
             case 5:
                 listcontrolmenu.clear();
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("楼层设置", "#97b2df", "#23ecf7", R.mipmap.quanjudingwei_quanjugailan, R.mipmap.quanjudingwei_quanjugailan_s, "#011a43", R.mipmap.menu_bg_blue));
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("网络设置", "#97b2df", "#00ff00", R.mipmap.quanjudingwei_duiyuanxianshi, R.mipmap.quanjudingwei_duiyuanxianshi_s, "#011a43", R.mipmap.menu_bg_green));
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("通信设置", "#97b2df", "#00ff00", R.mipmap.quanjudingwei_qingchuguiji, R.mipmap.quanjudingwei_qingchuguiji_s, "#011a43", R.mipmap.menu_bg_green));
-                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("离线地图", "#97b2df", "#ff8f00", R.mipmap.quanjudingwei_lishihuifang, R.mipmap.quanjudingwei_lishihuifang_s, "#011a43", R.mipmap.menu_bg_orange));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("楼层设置", "#97b2df", "#00ff00", R.mipmap.xitongshezhi_louceng, R.mipmap.xitongshezhi_louceng_s, "#011a43", R.mipmap.menu_bg_green));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("网络设置", "#97b2df", "#ff8f00", R.mipmap.xitongshezhi_wangluo, R.mipmap.xitongshezhi_wangluo_s, "#011a43", R.mipmap.menu_bg_orange));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("通信设置", "#97b2df", "#23ecf7", R.mipmap.xitongshezhi_tongxing, R.mipmap.xitongshezhi_tongxing_s, "#011a43", R.mipmap.menu_bg_blue));
+                listcontrolmenu.add(new ControlMenuAdapter.ControlMenuInfo("离线地图", "#97b2df", "#23ecf7", R.mipmap.xitongshezhi_lixianditu, R.mipmap.xitongshezhi_lixianditu_s, "#011a43", R.mipmap.menu_bg_blue));
                 break;
         }
 
@@ -507,12 +509,11 @@ public class MainActivity extends AppCompatActivity {
 
                     case CMD_RecGpsInfo:
 
-                        GpsInfo info = (GpsInfo)msg.obj;
+                        GpsInfo info = (GpsInfo) msg.obj;
 
-                        if(interfaceGaodeMap != null){
-                            interfaceGaodeMap.updateLngLat(info);
-                        }
 
+                        if (mapView != null)
+                            mapView.updateFiremenInfo(info);
 
                         break;
                     case CMD_RecSos:
@@ -523,5 +524,35 @@ public class MainActivity extends AppCompatActivity {
             ;
         };
     }
+
+
+    //    public interface interfaceGaodeMap {
+//        void setup3Dmodel();
+//
+//        void updateLngLat(GpsInfo info);
+//    }
+//
+//    private interfaceGaodeMap interfaceGaodeMap;
+//
+//    public void setListener(interfaceGaodeMap interfacepar) {
+//        this.interfaceGaodeMap = interfacepar;
+//    }
+
+    //activity 与 fragment 通信接口
+    public interface DeviceManagerinterface {
+
+        void newDeivece();
+
+        void editSelect();
+
+        void deleteSelect();
+    }
+
+    private DeviceManagerinterface deviceManagerinterface;
+
+    public void setDeviceManagerListener(DeviceManagerinterface interfacepar) {
+        this.deviceManagerinterface = interfacepar;
+    }
+
 }
 

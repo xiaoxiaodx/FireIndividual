@@ -1,4 +1,4 @@
-package com.example.firecommandandcontrolsystem.opengl;
+package com.example.firecommandandcontrolsystem.GLMapRender;
 
 import android.graphics.PointF;
 import android.opengl.GLES20;
@@ -12,6 +12,9 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import static javax.microedition.khronos.opengles.GL10.GL_NICEST;
+import static javax.microedition.khronos.opengles.GL10.GL_POINT_SMOOTH;
 
 public class Line3D {
     public ArrayList<Float> verticesList = new ArrayList<Float>();
@@ -44,6 +47,7 @@ public class Line3D {
                 "        void main(){\n" +
                 "            gl_Position = aMVPMatrix * vec4(aVertex, 1.0);\n" +
                 "            color = aColor;\n" +
+                "            gl_PointSize = 3.0;"+
                 "        }";
 
         String fragmentShader = "//有颜色 没有纹理\n" +
@@ -89,10 +93,12 @@ public class Line3D {
 
     public  synchronized void drawES20(float[] mvp, List<Float> listpts, float[] color) {
 
+        if(shader == null)
+            return;
         GLES20.glUseProgram(shader.program);
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        GLES20.glLineWidth(4.0f);
+
+        GLES20.glEnable(GL_POINT_SMOOTH);
+        GLES20.glHint(GL_POINT_SMOOTH, GL_NICEST);
 
         updateVertextBuffer(listpts);
 
@@ -103,10 +109,11 @@ public class Line3D {
         GLES20.glUniform4f(shader.aColor, color[0], color[1], color[2],1f);
 
         //开始画
-        GLES20.glDrawArrays(GLES20.GL_LINE_STRIP, 0, listpts.size()/3);
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, listpts.size()/3);
         GLES20.glDisableVertexAttribArray(shader.aVertex);
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-    }
+        //GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
+        GLES20.glDisable(GL_POINT_SMOOTH);
+    }
 }
 

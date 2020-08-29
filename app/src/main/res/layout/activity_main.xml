@@ -42,17 +42,148 @@
     <RelativeLayout
         android:id="@+id/statebar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/stateHeight"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorStates"
-        android:layout_alignParentBottom="true">
+        android:layout_height="@dimen/stateHeight">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/stateHeight"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/zonshu"></ImageView>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="总数："
+                android:textSize="@dimen/controlBtnFontSize"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical">
+            </TextView>
+            <TextView
+                android:id="@+id/txt_zongrenshu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/controlBtnFontSize1"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_vertical"
+                android:text="0"
+                android:gravity="center_vertical">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/controlBtnFontSize"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="人"
+                android:gravity="center_vertical">
+            </TextView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="45d6a4sd654a5d64s5a6dasdasd"
-            android:gravity="center">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="30dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/zaixian"></ImageView>
 
-        </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="在线："
+                android:textSize="@dimen/controlBtnFontSize"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical">
+            </TextView>
+            <TextView
+                android:id="@+id/zaixian"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/controlBtnFontSize1"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_vertical"
+                android:text="0"
+                android:gravity="center_vertical">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/controlBtnFontSize"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="人"
+                android:gravity="center_vertical">
+            </TextView>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@mipmap/baojingrenshu"></ImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="报警："
+                android:textSize="@dimen/controlBtnFontSize"
+                android:textColor="@android:color/holo_red_light"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical">
+            </TextView>
+            <TextView
+                android:id="@+id/baojing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/controlBtnFontSize1"
+                android:textColor="@android:color/holo_red_light"
+                android:layout_gravity="center_vertical"
+                android:text="0"
+                android:gravity="center_vertical">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/controlBtnFontSize"
+                android:textColor="@android:color/holo_red_light"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="人"
+                android:gravity="center_vertical">
+            </TextView>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/adhoc"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_toLeftOf="@+id/cloud"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:src="@mipmap/localnet_r"
+            ></ImageView>
+
+        <ImageView
+            android:id="@+id/cloud"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@mipmap/cloud_r"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"
+            ></ImageView>
     </RelativeLayout>
+
+
+
 </RelativeLayout>
