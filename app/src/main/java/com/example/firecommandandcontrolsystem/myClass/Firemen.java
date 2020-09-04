@@ -1,5 +1,6 @@
 package com.example.firecommandandcontrolsystem.myClass;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -8,6 +9,7 @@ import android.util.Log;
 import com.amap.api.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Firemen {
@@ -17,7 +19,7 @@ public class Firemen {
     static final public int CMD_STATE_WAIT = 0;     //等待接收指令
     static final public int CMD_STATE_RESCUE = 1;   //救援
     static final public int CMD_STATE_RESCUED = 2;  //被救援
-    static final public int CMD_STATE_RETREAT = 3;  //撤退
+    static final public int CMD_STATE_RETREAT = 4;  //撤退
 
     //位置信息
     private LatLng curLocation = new LatLng(0.0000001, 0.000000001);
@@ -31,11 +33,17 @@ public class Firemen {
     private int lngState;
     private int latState;
 
+    //室内轨迹点缓存,每个楼层一个List
+    public List<LatLngFloor> listIndoorPoint= new ArrayList<>();
+
     //基本信息
     private String name;
     private int bindDeviceId;
     private String groud;
     private float[] showColor = new float[4];
+    private String showColorStr;
+    private Bitmap bitmap;
+
 
     //设备信息
     float airpressHeight;
@@ -47,7 +55,13 @@ public class Firemen {
 
     //身体信息
     private String bloodType;
-    //接收指令的状态
+    //接收指令的状态  总共4个字节，暂时以最后一个字节  作为指令接收状态  1个字节有8位 每位都可以代表一个接收指令
+    /*
+    * 0x 00 00 00 00    无指令（位状态 0000 0000  0000 0000 0000 0000 0000 0000）
+    * 0x 00 00 00 01    救援他人（位状态 0000 0000  0000 0000 0000 0000 0000 0001）
+    * 0x 00 00 00 02    报警 被救援（位状态 0000 0000  0000 0000 0000 0000 0000 0010）
+    * 0x 00 00 00 04    撤退（位状态 0000 0000  0000 0000 0000 0000 0000 0100）
+    * */
     private int cmd_state = CMD_STATE_WAIT;
 
     //指令选中状态
@@ -55,6 +69,15 @@ public class Firemen {
     private boolean isSelectRescued = false;
     private boolean isSelectRetreat = false;
 
+
+    public int getCmdStateRescued(){
+        return (int)(cmd_state & CMD_STATE_RESCUED);
+    }
+
+    public void setCMDstate(int cmd){
+
+        cmd_state |=  CMD_STATE_RESCUED;
+    }
     public boolean isShowTrack() {
         return isShowTrack;
     }
@@ -247,60 +270,30 @@ public class Firemen {
         this.bloodType = bloodType;
     }
 
-
-    public void selectColorByID(int id) {
-
-
-        switch (id) {
-
-            case 1:
-                setShowColor(new float[]{0, 0, 1, 1});
-                break;
-            case 2:
-                setShowColor(new float[]{0, 1, 0, 1});
-                break;
-            case 3:
-                setShowColor(new float[]{1, 0, 0, 1});
-                break;
-            case 4:
-                setShowColor(new float[]{1, 1, 0, 1});
-                break;
-            case 5:
-                setShowColor(new float[]{1, 0, 1, 1});
-                break;
-            case 6:
-                setShowColor(new float[]{0, 1, 1, 1});
-                break;
-            default:
-                setShowColor(new float[]{0, 0, 0, 1});
-        }
+    public String getShowColorStr() {
+        return showColorStr;
     }
-//    public int  getPersonIconID (String color){
-//        int id = 0;
-//        if(color.equals(arrColor[0]))
-//            id = R.mipmap.p24ff00;
-//        else if(color.equals(arrColor[1]))
-//            id = R.mipmap.pfcff00;
-//        else if(color.equals(arrColor[2]))
-//            id = R.mipmap.p00fff6;
-//        else if(color.equals(arrColor[3]))
-//            id = R.mipmap.pff0000;
-//        else if(color.equals(arrColor[4]))
-//            id = R.mipmap.p0054ff;
-//        else if(color.equals(arrColor[5]))
-//            id = R.mipmap.p00c6ff;
-//        else if(color.equals(arrColor[6]))
-//            id = R.mipmap.p7e00ff;
-//        else if(color.equals(arrColor[7]))
-//            id = R.mipmap.pff00f0;
-//        else if(color.equals(arrColor[8]))
-//            id = R.mipmap.pff006c;
-//        else if(color.equals(arrColor[9]))
-//            id = R.mipmap.pff9600;
-//        else
-//            id = R.mipmap.pff0000;
-//
-//        return id;
-//    }
-//
+
+    public void setShowColorStr(String showColorStr) {
+        this.showColorStr = showColorStr;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    static class LatLngFloor{
+
+        public LatLngFloor(int floor, LatLng latLng) {
+            this.floor = floor;
+            this.latLng = latLng;
+        }
+
+        public int floor;
+        LatLng latLng;
+    }
 }

@@ -17,7 +17,9 @@ import androidx.core.content.ContextCompat;
 
 import com.example.firecommandandcontrolsystem.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class FloorInfo extends View {
@@ -27,7 +29,7 @@ public class FloorInfo extends View {
     private Paint paintAxis;
 
     private String[] xnums = {"0", "2", "4", "6", "8", "10"};
-    private String[] ynums = {"-3", "-2", "-1", "0", "1", "2", "3", "4", "5"};
+    private String[] ynums = {"-2", "-1", "1", "2", "3", "4", "5", "6", "7"};
 
     private static final int startX = 30;
     private static final int scaleSize = 4;
@@ -79,7 +81,7 @@ public class FloorInfo extends View {
         int LINE_NUM_Y = ynums.length;
         int LINE_NUM_X = xnums.length;
 
-        Log.e("ssssssssss", "" + Max_X);
+        //Log.e("ssssssssss", "" + Max_X);
         int axisXW = Max_X - startX;
         int axisYH = Max_Y - startX;
         //画X轴
@@ -116,27 +118,37 @@ public class FloorInfo extends View {
         List<Firemen> listFiremen = dataApplication.listFiremen;
 
 
+        Map<Integer,Integer> map = new HashMap<>();
         for (int i = 0; i < listFiremen.size(); i++) {
 
             //axisYH - axisYH/LINE_NUM_Y*i
             Firemen firemen = listFiremen.get(i);
-
             int floor = firemen.getFloor();
-            int deviceid = Integer.valueOf(firemen.getBindDeviceId());
+            int deviceid = firemen.getBindDeviceId();
+
+            if(map.containsKey(floor)){
+                int floorPersonNum = map.get(floor)+1;
+                map.put(floor,floorPersonNum);
+            }else {
+                map.put(floor,0);
+            }
+
+            int floorpersonnum = map.get(floor);
+
             for (int j = 0; j < ynums.length; j++) {
 
                 if (ynums[j] == String.valueOf(floor)) {
 
-                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), dataApplication.getIamgeRes(deviceid));
+                    Bitmap bitmap = dataApplication.getPersonBitMapByID(deviceid);
 
-                    canvas.drawBitmap(bitmap, 100, axisYH - axisYH / LINE_NUM_Y * j, paintAxis);
+                    canvas.drawBitmap(bitmap, 60+40*floorpersonnum, axisYH - axisYH / LINE_NUM_Y * (j+1), paintAxis);
 
                     break;
                 }
             }
-
         }
     }
+
 
 
 

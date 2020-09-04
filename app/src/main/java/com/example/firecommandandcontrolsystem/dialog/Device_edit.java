@@ -109,6 +109,8 @@ public class Device_edit extends Dialog {
         }
 
         public Device_edit create() {
+            if(context == null)
+                return null;
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             // instantiate the dialog with the custom Theme

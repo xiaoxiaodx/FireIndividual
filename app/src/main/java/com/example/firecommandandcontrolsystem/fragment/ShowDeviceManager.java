@@ -31,16 +31,15 @@ public class ShowDeviceManager extends Fragment {
     DeviceInfoAdapter deviceinfoadapter;
 
 
-    List<DeviceInfo> listdeviceinfo = new ArrayList<>();
+    DataApplication dataApplication;
 
-
+    List<DeviceInfo> listdeviceinfo;
     public ShowDeviceManager(MainActivity listener) {
 
 
-        listdeviceinfo.add(new DeviceInfo("小强", "小区一", 1, 1));
-        listdeviceinfo.add(new DeviceInfo("小强1", "小区1", 2, 2));
-        listdeviceinfo.add(new DeviceInfo("小强2", "小区1", 3, 3));
-        listdeviceinfo.add(new DeviceInfo("小强3", "小区2", 4, 4));
+        dataApplication = (DataApplication) listener.getApplication();
+
+        listdeviceinfo = dataApplication.listdeviceinfo;
         // deviceinfoadapter.notifyDataSetChanged();
 
         listener.setDeviceManagerListener(new MainActivity.DeviceManagerinterface() {
@@ -55,7 +54,8 @@ public class ShowDeviceManager extends Fragment {
 
                         Device_edit device_add = (Device_edit) dialog;
 
-                        listdeviceinfo.add(new DeviceInfo(device_add.edit_name, device_add.edit_group, device_add.selectindexColor, Integer.valueOf(device_add.edit_deviceid)));
+                        dataApplication.addDeviceInfoInList(new DeviceInfo(device_add.edit_name, device_add.edit_group, device_add.selectindexColor, Integer.valueOf(device_add.edit_deviceid)));
+
                         deviceinfoadapter.notifyDataSetChanged();
                         Log.e("test", "" + device_add.selectindexColor + "," + device_add.edit_name + "," + device_add.edit_group + "," + device_add.edit_deviceid);
                     }
@@ -68,7 +68,9 @@ public class ShowDeviceManager extends Fragment {
                             }
                         });
 
-                builder.create().show();
+                Device_edit device_edit = builder.create();
+                if(device_edit != null)
+                    device_edit.show();
 
             }
 
@@ -82,7 +84,7 @@ public class ShowDeviceManager extends Fragment {
                     Toast.makeText(getContext(), "当前未选中", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                final DeviceInfo deviceInfo = listdeviceinfo.get(dataApplication.deviceManagerCurSelectIndex);
+                final DeviceInfo deviceInfo =  dataApplication.listdeviceinfo.get(dataApplication.deviceManagerCurSelectIndex);
 
 
                 Device_edit.Builder builder = new Device_edit.Builder(getContext());
@@ -199,7 +201,7 @@ public class ShowDeviceManager extends Fragment {
     }
 
 
-    public class DeviceInfo {
+    public static class DeviceInfo {
         public DeviceInfo(String name, String group, int colorindex, int deviceid) {
             this.name = name;
             this.group = group;

@@ -1,6 +1,7 @@
 package com.example.firecommandandcontrolsystem.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.firecommandandcontrolsystem.Adapter.FiremenRescueAdapter;
 import com.example.firecommandandcontrolsystem.Adapter.FiremenRescuedAdapter;
 import com.example.firecommandandcontrolsystem.Adapter.FiremenRetreatAdapter;
+import com.example.firecommandandcontrolsystem.MainActivity;
 import com.example.firecommandandcontrolsystem.R;
 import com.example.firecommandandcontrolsystem.myClass.DataApplication;
 import com.example.firecommandandcontrolsystem.myClass.Firemen;
@@ -30,9 +32,28 @@ public class ShowCmdResuce extends Fragment {
     FiremenRescuedAdapter firemenRescuedAdapter;
 
 
-    public ShowCmdResuce(interfaceRescue resuce){
+    public ShowCmdResuce(MainActivity activity,interfaceRescue resuce){
 
         cmdRescue = resuce;
+
+        activity.setPersonInfoListener(new MainActivity.PersonInfointerface() {
+            @Override
+            public void notifyRescueUpdate() {
+                if(firemenRescueAdapter != null)
+                    firemenRescueAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void notifyRescuedUpdate() {
+                if(firemenRescuedAdapter != null)
+                    firemenRescuedAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void notifyRetreatUpdate() {
+
+            }
+        });
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,8 +85,8 @@ public class ShowCmdResuce extends Fragment {
                 if(cmdRescue != null){
                     int rescuedid = -1;
                     List<Integer> listrescue = new ArrayList<>();
-                    List<Firemen> firemenrescued = ((DataApplication)((DataApplication) getContext().getApplicationContext())).listRescued;
-                    List<Firemen> firemenrescue = ((DataApplication)((DataApplication) getContext().getApplicationContext())).listRescue;
+                    List<Firemen> firemenrescued = ((DataApplication) getContext().getApplicationContext()).listRescued;
+                    List<Firemen> firemenrescue = ((DataApplication)( getContext().getApplicationContext())).listRescue;
 
                     for(int i=0;i<firemenrescued.size();i++){
 
@@ -76,10 +97,12 @@ public class ShowCmdResuce extends Fragment {
                         }
                     }
 
+                    Log.e("test","营救人员数量："+firemenrescue.size());
                     for(int i=0;i<firemenrescue.size();i++){
-                        Firemen firemen = firemenrescued.get(i);
+                        Firemen firemen = firemenrescue.get(i);
                         if(firemen.isSelectRescue()){
-                            listrescue.add(Integer.valueOf(firemen.getBindDeviceId()));
+                            listrescue.add(firemen.getBindDeviceId());
+                            Log.e("test","营救人员："+firemen.getBindDeviceId());
                         }
                     }
 

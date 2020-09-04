@@ -30,7 +30,6 @@ public class FiremenRescueAdapter extends RecyclerView.Adapter<FiremenRescueAdap
     private boolean selects[] = new boolean[100];
 
     public static interface onItemClick {
-
         void onItemClick(View view, int position);
     }
 
@@ -89,13 +88,13 @@ public class FiremenRescueAdapter extends RecyclerView.Adapter<FiremenRescueAdap
             holder.linearlayout.setBackgroundColor(Color.parseColor("#02e5f8"));
          else
             holder.linearlayout.setBackgroundColor(Color.parseColor("#063859"));
-        holder.textView.setText(data.getBindDeviceId());
+        holder.textView.setText(String.valueOf(data.getBindDeviceId()));
 
         holder.linearlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Log.e("hello test:", "点击了 :" +position);
+                Log.e("hello test:", "点击了 :" +position+",");
                 onItemClick.onItemClick(view, position);
             }
         });

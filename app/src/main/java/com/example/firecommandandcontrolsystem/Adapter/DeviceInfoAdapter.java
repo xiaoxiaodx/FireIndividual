@@ -90,34 +90,34 @@ public class DeviceInfoAdapter extends RecyclerView.Adapter<DeviceInfoAdapter.Vi
         holder.idView.setText(String.valueOf(data.deviceid));
         switch (data.colorindex) {
 
-            case 0:
+            case 1:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color1);
                 break;
-            case 1:
+            case 2:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color2);
                 break;
-            case 2:
+            case 3:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color3);
                 break;
-            case 3:
+            case 4:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color4);
                 break;
-            case 4:
+            case 5:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color5);
                 break;
-            case 5:
+            case 6:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color6);
                 break;
-            case 6:
+            case 7:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color7);
                 break;
-            case 7:
+            case 8:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color8);
                 break;
-            case 8:
+            case 9:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color9);
                 break;
-            case 9:
+            case 10:
                 holder.selcetcolor.setBackgroundResource(R.drawable.shape_color10);
                 break;
             default:

@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.example.firecommandandcontrolsystem.MainActivity;
+import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.FloorConfig;
 import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.GpsInfo;
 import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.Rescue;
 import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.Retreat;
@@ -64,15 +65,13 @@ public class AdhocClientThread {
     public TimerTask timerTask;
 
 
-
     public AdhocClientThread(String ip, int port, int id) {
 
-        HostIp = ip;
-        HostPort = port;
+
         identificationID = id;
         insTimer();
 
-        restartSocket();
+        restartSocket(ip, port);
     }
 
 
@@ -100,20 +99,23 @@ public class AdhocClientThread {
     }
 
 
-    private void restartSocket() {
+    public void restartSocket(String ip, int port) {
+        HostIp = ip;
+        HostPort = port;
+
         timer.cancel();
         timerTask.cancel();
 
         isNeedRec = false;
 
-        if(receiHandler != null)
+        if (receiHandler != null)
             receiHandler.getLooper().quitSafely();
-        if(socket != null){
+        if (socket != null) {
 
             try {
-                if(outputStream!= null)
-                outputStream.close();
-                if(inputStream != null)
+                if (outputStream != null)
+                    outputStream.close();
+                if (inputStream != null)
                     inputStream.close();
 
                 socket.close();
@@ -123,7 +125,6 @@ public class AdhocClientThread {
         }
 
 
-
         // MainActivity.sendMsgToHandle(MainActivity.HANDLERTYPR_NET_STATE, 0, MainActivity.DISCONNECT, port);
         try {
             Thread.sleep(1500);
@@ -131,7 +132,6 @@ public class AdhocClientThread {
             e1.printStackTrace();
         }
         //MainActivity.sendMsgToHandle(MainActivity.HANDLERTYPR_NET_STATE, 0, MainActivity.RECONNECTING, port);
-
 
 
         socket = null;
@@ -167,6 +167,8 @@ public class AdhocClientThread {
                 SerAddr = new InetSocketAddress(HostIp, HostPort);
                 socket = new Socket();
                 socket.connect(SerAddr, 3000);
+
+                MainActivity.sendMsgToHandle(MainActivity.Adhoc_Connect, true, 0, 0);
                 isNeedRec = true;
                 inputStream = socket.getInputStream();
                 byte[] buffer = new byte[1024];
@@ -181,6 +183,8 @@ public class AdhocClientThread {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+
+                MainActivity.sendMsgToHandle(MainActivity.Adhoc_Connect, false, 0, 0);
             }
 
         }
@@ -194,95 +198,109 @@ public class AdhocClientThread {
             Looper.prepare();
 
 
+            //outputStream = socket.getOutputStream();
 
-                //outputStream = socket.getOutputStream();
+            receiHandler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
 
-                receiHandler = new Handler() {
-                    @Override
-                    public void handleMessage(Message msg) {
+                   // Log.e(TAG, "receiHandler：" + msg.what + "," + msg.obj);
 
-                        Log.e(TAG,"receiHandler："+msg.what + ","+msg.obj);
+                    byte[] sendbyte;
+                    switch (msg.what) {
+                        //主动发送
+                        case AdhocProtocol.heartBeat:
+                            if (flagHeartBeatResponse) {
+                                flagHeartBeatResponse = false;
+                                heartBeatPackageCount++;
+                            } else {//没有心跳应答-----报警或者其他操作
+                                //  MainActivity.sendMsgToHandle(MainActivity.HANDLERTYPR_NET_STATE, 0, MainActivity.TRANSPORT_NOHEARTREPLY, 0);
+                                strbuff += "";
+                            }
+                            byte[] heartByteArr = protocol.heartBeatPackage((byte) identificationID, heartBeatPackageCount);
+                            sendByteDate(heartByteArr);
 
-                        byte[] sendbyte;
-                        switch (msg.what) {
-                            //主动发送
-                            case AdhocProtocol.heartBeat:
-                                if (flagHeartBeatResponse) {
-                                    flagHeartBeatResponse = false;
-                                    heartBeatPackageCount++;
-                                } else {//没有心跳应答-----报警或者其他操作
-                                    //  MainActivity.sendMsgToHandle(MainActivity.HANDLERTYPR_NET_STATE, 0, MainActivity.TRANSPORT_NOHEARTREPLY, 0);
-                                    strbuff += "";
-                                }
-                                byte[] heartByteArr = protocol.heartBeatPackage((byte) identificationID, heartBeatPackageCount);
-                                sendByteDate(heartByteArr);
+                            strbuff += "发送心跳包----->" + bytesToHexString(heartByteArr);
+                            break;
+                        case AdhocProtocol.heartBeatResponse:
+                            Log.e(TAG, "心跳应答：");
+                            strbuff += "解析到心跳应答";
+                            flagHeartBeatResponse = true;
+                            break;
+                        case AdhocProtocol.configHeight:
 
-                                strbuff += "发送心跳包----->" + bytesToHexString(heartByteArr);
-                                break;
-                            case AdhocProtocol.heartBeatResponse:
-                                Log.e(TAG, "心跳应答：");
-                                strbuff += "解析到心跳应答";
-                                flagHeartBeatResponse = true;
-                                break;
-                            case AdhocProtocol.configHeight:
+                            FloorConfig floorConfig =(FloorConfig)msg.obj;
+                            floorConfig.count ++;
+                            byte[] floorArr = protocol.configHeightPackage(floorConfig.count,floorConfig.curfloor,floorConfig.firstfloorheight,floorConfig.eachfloorheight,floorConfig.fu_firstfloorheight,floorConfig.fu_eachfloorheight);
+                            Log.e(TAG, "楼层配置："+bytesToHexString(floorArr));
+                            sendByteDate(floorArr);
+                            break;
+                        case AdhocProtocol.retreat:
 
-                                break;
-                            case AdhocProtocol.retreat:
+                            Retreat retreat = (Retreat) msg.obj;
+                            retreat.count++;
+                            byte[] retreatArr = protocol.retreatPackage(retreat.count, (byte) retreat.cmdLevel, retreat.isALLRetreat, retreat.listRetreat);
+                            sendByteDate(retreatArr);
 
-                                Retreat retreat = (Retreat)msg.obj;
-                                retreat.count++;
-                                byte[] retreatArr = protocol.retreatPackage(retreat.count,(byte)retreat.cmdLevel,retreat.isALLRetreat,retreat.listRetreat);
-                                sendByteDate(retreatArr);
+                            break;
+                        case AdhocProtocol.rescue:
 
-                                break;
-                            case AdhocProtocol.rescue:
-                                Rescue rescue = (Rescue)msg.obj;
-                                rescue.count++;
-                                byte[] rescueArr = protocol.rescuePackage(rescue.count,(byte)rescue.id,(byte)rescue.localstate,
-                                        rescue.lat,(byte)rescue.latstate,rescue.lng,(byte)rescue.lngstate,rescue.height,
-                                        (byte)rescue.floor,rescue.isAllRescue,rescue.listRescue);
-                                sendByteDate(rescueArr);
+                            Rescue rescue = (Rescue) msg.obj;
+                            rescue.count++;
+                            byte[] rescueArr = protocol.rescuePackage(rescue.count, (byte) rescue.id, (byte) rescue.localstate,
+                                    rescue.lat, (byte) rescue.latstate, rescue.lng, (byte) rescue.lngstate, rescue.height,
+                                    (byte) rescue.floor, rescue.isAllRescue, rescue.listRescue);
 
-                                break;
+                            sendByteDate(rescueArr);
 
-                             //被动接收
-                            case AdhocProtocol.RecGpsInfo:
+                            break;
 
-                                int id = ((GpsInfo)msg.obj).id;
-                                int count = ((GpsInfo)msg.obj).count;
-                                byte[] gpsByteArr = protocol.gpsInfoReplyPackage((byte)id, count);
-                                sendByteDate(gpsByteArr);
+                        //被动接收
+                        case AdhocProtocol.RecGpsInfo:
 
-                                MainActivity.sendMsgToHandle(MainActivity.CMD_RecGpsInfo,msg.obj,0,0);
-                            case AdhocProtocol.Sos:
+                            int id = ((GpsInfo) msg.obj).id;
+                            int count = ((GpsInfo) msg.obj).count;
+                            byte[] gpsByteArr = protocol.gpsInfoReplyPackage((byte) id, count);
+                            sendByteDate(gpsByteArr);
 
-                                MainActivity.sendMsgToHandle(MainActivity.CMD_RecSos,msg.obj,0,0);
+                            MainActivity.sendMsgToHandle(MainActivity.CMD_RecGpsInfo, msg.obj, 0, 0);
+                            break;
+                        case AdhocProtocol.Sos:
 
-                                break;
+                            MainActivity.sendMsgToHandle(MainActivity.CMD_RecSos, msg.obj, 0, 0);
 
-                            default:
-                                break;
-                        }
-                        if (strbuff != "") {
-                            msg.obj = strbuff;
-                            // MainActivity.sendMsgToHandle(HANDLERTYPR_LOG, msg.obj, 0, 0);
-                            strbuff = "";
-                        }
+                            break;
+                        case AdhocProtocol.recConfigHeightReponse:
+                            Log.e(TAG,"楼层配置回应");
+                            MainActivity.sendMsgToHandle(MainActivity.CMD_RecRetreat, msg.obj, 0, 0);
+                            break;
+                        case AdhocProtocol.recRescueReponse:
+                            Log.e(TAG,"救援回应");
+                            MainActivity.sendMsgToHandle(MainActivity.CMD_RecRescue, msg.obj, 0, 0);
+                            break;
+                        case AdhocProtocol.recRetreatRepose:
+                            Log.e(TAG,"撤退回应");
+                            MainActivity.sendMsgToHandle(MainActivity.CMD_RecFloorConifg, msg.obj, 0, 0);
+                            break;
+                        default:
+                            break;
                     }
-                };
+                    if (strbuff != "") {
+                        msg.obj = strbuff;
+                        // MainActivity.sendMsgToHandle(HANDLERTYPR_LOG, msg.obj, 0, 0);
+                        strbuff = "";
+                    }
+                }
+            };
 
             Looper.loop();// 启动 xxdc
         }
     }
 
 
-    private void configFloor(){
-
-    }
-
-    private void sendByteDate(byte[] bytes){
-
-        if(socket != null) {
+    private void sendByteDate(byte[] bytes) {
+        //Log.e(TAG, "test:" + bytesToHexString(bytes));
+        if (socket != null) {
             try {
                 outputStream = socket.getOutputStream();
                 outputStream.write(bytes);
@@ -291,6 +309,7 @@ public class AdhocClientThread {
             }
         }
     }
+
     public String bytesToHexString(byte[] bytes) {
         char[] buf = new char[bytes.length * 2];
         int index = 0;
@@ -301,8 +320,6 @@ public class AdhocClientThread {
 
         return new String(buf);
     }
-
-
 
 
 }

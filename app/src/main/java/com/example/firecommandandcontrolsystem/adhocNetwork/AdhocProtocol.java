@@ -97,13 +97,13 @@ public class AdhocProtocol {
                     int validDataLen = 0xff & dataBuff[index + 2];//有效数据长度
                     int checkLen = 0xff & (validDataLen + 3);     //校验数据长度=有效数据长度+有效数据+字节头
                     if (dataBuff.length - index > checkLen) {//解析时判断后续数据长度是否充足不够
-                        Log.e("tag1", dataBuff.length + "," + index + "," + validDataLen + "checklen" + checkLen);
+                       // Log.e("tag1", dataBuff.length + "," + index + "," + validDataLen + "checklen" + checkLen);
                         byte[] checkArr = new byte[validDataLen + 3];
                         System.arraycopy(dataBuff, index, checkArr, 0, validDataLen + 3);
                         byte checkBit = checkSum_crc8(checkArr, (byte) checkArr.length);
                         if (checkBit == dataBuff[index + checkLen]) {
                             byte[] validDataArr = new byte[validDataLen];
-                            Log.e("tag", checkArr.length + "," + validDataArr.length);
+                            //Log.e("tag", checkArr.length + "," + validDataArr.length);
                             System.arraycopy(checkArr, 3, validDataArr, 0, validDataLen);
                             phaseValidData(validDataArr);
 
@@ -128,7 +128,7 @@ public class AdhocProtocol {
 
         Message msg = new Message();
 
-        Log.e(TAG, "phaseValidData " + data[0]);
+        //Log.e(TAG, "phaseValidData " + data[0]);
         switch (data[0]) {//数据包类型
             case heartBeatResponse:
                 int vesionNum = 0xff & data[1];
@@ -201,7 +201,7 @@ public class AdhocProtocol {
                         + "," + String.valueOf(otherPos);
                 GpsInfo gpsInfo = new GpsInfo(personid2,gpsCount,lat,lng,latType,lngType,height,localState,floor,batteryFoot,batteryPhone,batteryNet);
 
-                Log.e("Rec", "解析到定位包：" + buffString);
+                //Log.e("Rec", "解析到定位包：" + buffString);
                 Message msgGpsInfo = new Message();
                 msgGpsInfo.what = RecGpsInfo;
                 msgGpsInfo.obj = gpsInfo;
@@ -210,25 +210,25 @@ public class AdhocProtocol {
                 break;
             case Sos:
                 Log.e(TAG, "SOS："+bytesToHexString(data));
-//                 phaseIndex = 1;
-//                 personid2 = 0xff & data[phaseIndex++];
+                 phaseIndex = 1;
+                 personid2 = 0xff & data[phaseIndex++];
 //                 int count = (data[phaseIndex] << 8) | data[++phaseIndex];
 //                phaseIndex++;
 //
 //                 int rescuecount = 0xff & data[phaseIndex++];
-//
-//                 Sos sos = new Sos();
-//                 sos.count = rescuecount;
-//                 sos.id = personid2;
-//
+
+                 Sos sos = new Sos();
+                 sos.count = 1;
+                 sos.id = personid2;
+
 //                 for(int i=0;i<rescuecount;i++)
 //                     sos.listRescue.add(phaseIndex++);
-//
-//                Message msgSos = new Message();
-//                msgSos.what = RecGpsInfo;
-//                msgSos.obj = Sos;
-//                if (AdhocClientThread.receiHandler != null)
-//                    AdhocClientThread.receiHandler.sendMessage(msgSos);
+
+                Message msgSos = new Message();
+                msgSos.what = Sos;
+                msgSos.obj = sos;
+                if (AdhocClientThread.receiHandler != null)
+                    AdhocClientThread.receiHandler.sendMessage(msgSos);
                 break;
             case recRetreatRepose:
                 recCommonReposne(data, data[0]);
@@ -253,13 +253,13 @@ public class AdhocProtocol {
         int phaseIndex = 1;
         int personid = 0xff & data[phaseIndex++];
 
-        byte[] countBytes = new byte[4];    //纬度
-        System.arraycopy(data, phaseIndex, countBytes, 0, 4);
-
-        int count = bytes2Int(countBytes, true);
+//        byte[] countBytes = new byte[4];
+//        System.arraycopy(data, phaseIndex, countBytes, 0, 4);
+//
+//        int count = bytes2Int(countBytes, true);
 
         msg.what = cmd;
-        msg.obj = "" + personid + "," + count;
+        msg.obj =  personid ;
         if (AdhocClientThread.receiHandler != null)
             AdhocClientThread.receiHandler.sendMessage(msg);
 
@@ -311,7 +311,7 @@ public class AdhocProtocol {
             idCount = listid.size();
         }
 
-        int validlen = 5 + idCount;
+        int validlen = 6 + idCount;
         byte[] byteArr = new byte[validlen + 4];
 
         try {
@@ -323,7 +323,7 @@ public class AdhocProtocol {
 
             byteArr[index++] = retreat;
             byte[] bytecount = int2Byte(count, true);
-            System.arraycopy(bytecount, 0, byteArr, 0, 4);
+            System.arraycopy(bytecount, 0, byteArr, index, 4);
             index += 4;
 
             byteArr[index++] = cmdLevel;
@@ -352,14 +352,13 @@ public class AdhocProtocol {
 
         int idCount = 0;
 
-
         if (isAllRescue)
             idCount = 1;
         else {
             idCount = rescueidlist.size();
         }
 
-        int validlen = 31 + idCount;
+        int validlen = 26 + idCount;
         byte[] byteArr = new byte[validlen + 4];
 
         try {
@@ -368,29 +367,34 @@ public class AdhocProtocol {
             index += 2;
             byteArr[index++] = (byte) (validlen & 0xff);
 
-            byteArr[index++] = retreat;
+            byteArr[index++] = rescue;
 
-            byte[] bytecount = int2Byte(count, true);
-            System.arraycopy(bytecount, 0, byteArr, 0, 4);
-            index += 4;
+//            byte[] bytecount = int2Byte(count, true);
+//            System.arraycopy(bytecount, 0, byteArr, index, 4);
+//            index += 4;
 
             byteArr[index++] = rescuedid;
             byteArr[index++] = rescuedstate;
 
 
-            byte latArr[] = Double2byte( rescuedLat,true);
-            System.arraycopy(latArr, 0, byteArr, 0, 8);
-            index += 8;
+            Log.e("test","搜救1："+rescuedLat+","+rescuedLng);
+            //纬度
+            long longLat = Double.doubleToLongBits(rescuedLat);
+            byte[] byteArrlat = getBytes(longLat);
+            System.arraycopy(byteArrlat, 0, byteArr, index, byteArrlat.length);
+            index = index + byteArrlat.length;
             byteArr[index++] = rescuedLat1;
-
-            byte lngArr[] = Double2byte( rescuedLng,true);
-            System.arraycopy(lngArr, 0, byteArr, 0, 8);
-            index += 8;
+            //经度
+            long longLng = Double.doubleToLongBits(rescuedLng);
+            byte[] byteArrnLng = getBytes(longLng);
+            System.arraycopy(byteArrnLng, 0, byteArr, index, byteArrnLng.length);
+            index = index + byteArrnLng.length;
             byteArr[index++] = rescuedLng1;
-
-            byte[] height = float2byte(rescuedHeight, true);
-            System.arraycopy(height, 0, byteArr, 0, 4);
-            index += 4;
+            //高度
+            int floatHeight = Float.floatToIntBits(rescuedHeight);
+            byte[] byteHeight = getBytes(floatHeight);
+            System.arraycopy(byteHeight, 0, byteArr, index, byteHeight.length);
+            index = index + byteHeight.length;
 
             byteArr[index++] = floor;
 
@@ -398,7 +402,7 @@ public class AdhocProtocol {
                 byteArr[index++] = (byte) ( 0xff);
             else
                 for (int i = 0; i < idCount; i++) {
-                    int id = Integer.valueOf(rescueidlist.get(i));
+                    int id = rescueidlist.get(i);
                     byteArr[index++] = (byte) (id & 0xff);
                 }
 
@@ -413,13 +417,13 @@ public class AdhocProtocol {
 
 
 
-    byte[] configHeightPackage(int count, float firstHeight, float topheight, float lowFirstHeight, float lowHeight) {
-        byte[] byteArr = new byte[30 + 4];
+    byte[] configHeightPackage(int count,float curFloor, float firstHeight, float topheight, float lowFirstHeight, float lowHeight) {
+        byte[] byteArr = new byte[25 + 4];
 
         int index = 0;
         System.arraycopy(fixHead, 0, byteArr, 0, 2);
         index += 2;
-        byteArr[index++] = (byte) 30 & 0xff;    //头加有效数据长度， 3个字节  kaochanggongzhengfutamen
+        byteArr[index++] = (byte) 25 & 0xff;    //头加有效数据长度， 3个字节  kaochanggongzhengfutamen
         try {
             byteArr[index++] = configHeight;
             byte[] bytecount = int2Byte(count, true);
@@ -428,15 +432,17 @@ public class AdhocProtocol {
             byte[] bytelowFirstHeight = float2byte(lowFirstHeight, true);
             byte[] bytelowHeight = float2byte(lowHeight, true);
 
-            System.arraycopy(bytecount, 0, byteArr, 0, 4);
+            System.arraycopy(bytecount, 0, byteArr, index, 4);
             index += 4;
-            System.arraycopy(bytefirstHeight, 0, byteArr, 0, 4);
+            System.arraycopy(bytefirstHeight, 0, byteArr, index, 4);
             index += 4;
-            System.arraycopy(bytetopheight, 0, byteArr, 0, 4);
+            System.arraycopy(bytetopheight, 0, byteArr, index, 4);
             index += 4;
-            System.arraycopy(bytelowFirstHeight, 0, byteArr, 0, 4);
+            System.arraycopy(bytelowFirstHeight, 0, byteArr, index, 4);
             index += 4;
-            System.arraycopy(bytelowHeight, 0, byteArr, 0, 4);
+            System.arraycopy(bytelowHeight, 0, byteArr, index, 4);
+            index += 4;
+            System.arraycopy(bytelowHeight, 0, byteArr, index, 4);
 
             byte check = checkSum_crc8(byteArr, (byte) (byteArr.length - 1));
             byteArr[byteArr.length - 1] = check;
@@ -644,6 +650,16 @@ public class AdhocProtocol {
         bytes[7] = (byte) ((data >> 56) & 0xff);
         return bytes;
     }
+
+    byte[] double2Bytes(double d) {
+        long value = Double.doubleToRawLongBits(d);
+        byte[] byteRet = new byte[8];
+        for (int i = 0; i < 8; i++) {
+            byteRet[i] = (byte) ((value >> 8 * i) & 0xff);
+        }
+        return byteRet;
+    }
+
 
     public int getInt(byte[] bytes) {
         return (0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)) | (0xff0000 & (bytes[2] << 16)) | (0xff000000 & (bytes[3] << 24));

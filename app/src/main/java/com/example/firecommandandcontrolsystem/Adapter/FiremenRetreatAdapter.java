@@ -96,7 +96,7 @@ public class FiremenRetreatAdapter extends BaseAdapter {
 
         Firemen item = myArrData.get(position);
         //holder.linearLayout.setTag((Integer)position);
-        holder.textView.setText(item.getBindDeviceId());
+        holder.textView.setText(String.valueOf(item.getBindDeviceId()));
         return convertView;
     }
 

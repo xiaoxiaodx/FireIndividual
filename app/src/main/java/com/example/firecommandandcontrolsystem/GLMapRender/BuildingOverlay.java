@@ -447,11 +447,11 @@ public class BuildingOverlay {
             return;
         GLES20.glUseProgram(shader.program);
 
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+       GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         GLES20.glEnable(GL_BLEND);
         GLES20.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glDisable(GL_LIGHTING);
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+       // GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
 
 

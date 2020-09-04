@@ -39,75 +39,32 @@ public class MapSelectPolygon {
 
         this.aMap = aMap;
 
-
-        polyline = aMap.addPolyline((new PolylineOptions())
-                .width(4));
-
-        polyline.setColor(R.color.fontcolor_dep3);
-        polygon = aMap.addPolygon(new PolygonOptions().strokeWidth(4f)
-                .strokeColor(Color.parseColor("#8862a46b")).fillColor(Color.parseColor("#8862a46b")));
-
-        setListenClick();
-
+        mapClickListener = new AMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if (!isEnd) {
+                    addMarker(latLng);
+                }
+            }
+        };
     }
 
-    private void setListenClick() {
+    AMap.OnMapClickListener mapClickListener;
 
+    public void setListenClick() {
 
         if (aMap != null) {
-            aMap.setOnMapClickListener(new AMap.OnMapClickListener() {
-                @Override
-                public void onMapClick(LatLng latLng) {
-                    if (!isEnd) {
-                        addMarker(latLng);
-                    }
-                }
-            });
+            latLngList.clear();
+            aMap.setOnMapClickListener(mapClickListener);
         }
+    }
 
+    public void removeAmapClickListensr(){
 
-
-        //marker点击监听
-
-        aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
-
-            @Override
-
-            public boolean onMarkerClick(Marker marker) {
-
-                if (isEnd) {
-
-                } else {
-
-                    if ( oriMarker.equals(marker)) {
-
-                        //封闭图形
-
-                        isEnd = true;
-
-                        //添加marker
-
-                        //addMarker(marker.getPosition());
-
-                        //画多边形
-                        polygon.setPoints(latLngList);
-
-
-                        return true;
-
-                    } else {
-
-                        //未封闭,点击其它marke
-
-                    }
-
-                }
-
-                return false;
-
-            }
-
-        });
+        if (aMap != null) {
+            aMap.clear();
+            aMap.removeOnMapClickListener(mapClickListener);
+        }
     }
 
 
@@ -124,7 +81,7 @@ public class MapSelectPolygon {
         if(latLngList.size() == 0)
             oriMarker = marker;
         latLngList.add(latLng);
-        polyline.setPoints(latLngList);
+       // polyline.setPoints(latLngList);
 
     }
 

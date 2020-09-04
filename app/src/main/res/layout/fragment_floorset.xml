@@ -51,7 +51,7 @@
                 </TextView>
 
                 <EditText
-                    android:id="@+id/topfirst_height"
+                    android:id="@+id/firstFloorHeight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/fontsize_4"
@@ -69,7 +69,7 @@
                 </TextView>
 
                 <EditText
-                    android:id="@+id/lowfirst_height"
+                    android:id="@+id/fu1_floorheight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/fontsize_4"
@@ -78,7 +78,24 @@
                     android:inputType="numberDecimal"
                     android:lines="1"
                     android:textColor="@color/fontcolor_dep1"></EditText>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="当前楼层："
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4">
+                </TextView>
 
+                <EditText
+                    android:id="@+id/curfloor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontsize_4"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="10dp"
+                    android:inputType="numberDecimal"
+                    android:lines="1"
+                    android:textColor="@color/fontcolor_dep1"></EditText>
             </LinearLayout>
 
             <LinearLayout
@@ -100,7 +117,7 @@
                 </TextView>
 
                 <EditText
-                    android:id="@+id/top_height"
+                    android:id="@+id/eachFloorHeight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/fontsize_4"
@@ -121,7 +138,7 @@
                 </TextView>
 
                 <EditText
-                    android:id="@+id/low_height"
+                    android:id="@+id/fu_eachfloorheight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/fontsize_4"
@@ -133,7 +150,31 @@
 
                 </EditText>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="负二楼以下层高："
+                    android:visibility="invisible"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/fontsize_4">
+
+                </TextView>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontsize_4"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    android:textColor="@color/fontcolor_dep1"
+                    android:inputType="numberDecimal"
+                    android:lines="1">
+
+                </EditText>
             </LinearLayout>
+
+
         </LinearLayout>
 
         <RelativeLayout
@@ -141,7 +182,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="150dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="40dp">
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -173,7 +214,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
-        android:layout_weight="1">
+        android:layout_weight="2">
 
         <TextView
             android:id="@+id/floor_tips"

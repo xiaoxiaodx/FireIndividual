@@ -8,6 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="switchInfoShow" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_showinfo</item>
+    </style>
+
 
     <style name="colorRadioBtnTheme1" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/select_color1</item>

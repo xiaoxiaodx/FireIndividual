@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -20,7 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.maps.UiSettings;
 import com.example.firecommandandcontrolsystem.Adapter.ControlMenuAdapter;
@@ -31,6 +36,7 @@ import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.Floor
 import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.GpsInfo;
 import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.Rescue;
 import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.Retreat;
+import com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass.Sos;
 import com.example.firecommandandcontrolsystem.fragment.ShowCmdResuce;
 import com.example.firecommandandcontrolsystem.fragment.ShowCmdRetreat;
 import com.example.firecommandandcontrolsystem.fragment.ShowDeviceManager;
@@ -41,6 +47,7 @@ import com.example.firecommandandcontrolsystem.fragment.ShowNetSet;
 import com.example.firecommandandcontrolsystem.fragment.ShowRescueLocation;
 import com.example.firecommandandcontrolsystem.myClass.DataApplication;
 import com.example.firecommandandcontrolsystem.myClass.Firemen;
+import com.example.firecommandandcontrolsystem.myClass.FloorInfo;
 import com.example.firecommandandcontrolsystem.myClass.MyMapView;
 
 import java.util.ArrayList;
@@ -61,12 +68,20 @@ public class MainActivity extends AppCompatActivity {
     AdhocClientThread adhocThread;
 
 
+    //发送
     static final public int CMD_FloorConifg = 1;
     static final public int CMD_Retreat = 2;
     static final public int CMD_Rescue = 3;
 
+    //接收
     static final public int CMD_RecSos = 4;
-    static final public int CMD_RecGpsInfo = 5;
+    static final public int CMD_RecRetreat = 5;
+    static final public int CMD_RecRescue = 6;
+    static final public int CMD_RecGpsInfo = 7;
+    static final public int CMD_RecFloorConifg = 8;
+
+    static final public int Adhoc_Connect = 100;
+    static final public int Cloud_Connect = 101;
 
     GridView controlMenuGirdview;
     ControlMenuAdapter controlMenuAdapter;
@@ -78,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 //    private ShowFiremenInfo showFiremenInfo;
 
 
+    DataApplication dataApplication;
     MyMapView mapView;
 
     @Override
@@ -90,20 +106,23 @@ public class MainActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
+        dataApplication = (DataApplication) getApplication();
         initWindows();
         initMasterMenu();
         initControlMenu();
+        setDataApplicationCallback();
 
         mapView = (MyMapView) findViewById(R.id.gaodeMap);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
+        mapView.initMapData(getApplicationContext());
+
         mapView.init3DEnvir();
 
 
-        mapView.getMap().setMapType(MAP_TYPE_NIGHT);
+        // mapView.getMap().setMapType(MAP_TYPE_NIGHT);
 
 
-
-        UiSettings uiSettings =   mapView.getMap().getUiSettings();
+        UiSettings uiSettings = mapView.getMap().getUiSettings();
         replaceLeftControlMenu(0);
         uiSettings.setLogoBottomMargin(-50);//隐藏logo
         uiSettings.setCompassEnabled(true);
@@ -111,6 +130,66 @@ public class MainActivity extends AppCompatActivity {
         handmessage();
 
         autoConnect();
+
+
+        dataApplication.addDeviceInfoInList(new ShowDeviceManager.DeviceInfo("小强", "小区一", 1, 1));
+        dataApplication.addDeviceInfoInList(new ShowDeviceManager.DeviceInfo("小强1", "小区1", 2, 2));
+        dataApplication.addDeviceInfoInList(new ShowDeviceManager.DeviceInfo("小强2", "小区1", 3, 3));
+        dataApplication.addDeviceInfoInList(new ShowDeviceManager.DeviceInfo("小强3", "小区2", 4, 4));
+
+
+    }
+
+    FloorInfo floorInfo;
+    private void setDataApplicationCallback() {
+
+        dataApplication.setListener(new DataApplication.DataapplicationInterfaceCallback() {
+            @Override
+            public void toltalNumberOfFiremenChange(int count) {
+
+                ((TextView) findViewById(R.id.zongrenshu)).setText(String.valueOf(count));
+            }
+
+            @Override
+            public void onlineNumberOfFiremenChange(int count) {
+                ((TextView) findViewById(R.id.zaixian)).setText(String.valueOf(count));
+                if(personInfointerface != null) {
+                    personInfointerface.notifyRetreatUpdate();
+                    personInfointerface.notifyRescueUpdate();
+                }
+            }
+
+            @Override
+            public void sosNumberOfFiremen(int count) {
+                ((TextView) findViewById(R.id.baojing)).setText(String.valueOf(count));
+                if(personInfointerface != null){
+                    personInfointerface.notifyRescuedUpdate();
+                    personInfointerface.notifyRescueUpdate();
+                }
+
+
+            }
+
+            @Override
+            public void notifyIndoorUpdate() {
+                if(indoormapinterface != null) {
+                    indoormapinterface.notifyMapUpdate();
+                }
+            }
+
+            @Override
+            public void showToast(String str) {
+                Toast.makeText(getApplicationContext(),str,Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void notifyFloorInfoUpdate() {
+                 floorInfo = (FloorInfo)findViewById(R.id.floorinfo);
+                 floorInfo.invalidate();
+            }
+        });
+
+
     }
 
 
@@ -119,7 +198,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (adhocThread == null) {
-                    adhocThread = new AdhocClientThread("39.108.105.245", 7090, 0);
+
+                    dataApplication.getNetConfig();
+                    if (dataApplication.adhocClient_ip == "" || dataApplication.adhocClient_port == 0)
+                        return;
+                    Log.e(TAG, dataApplication.adhocClient_ip + ", " + dataApplication.adhocClient_port);
+                    adhocThread = new AdhocClientThread(dataApplication.adhocClient_ip, dataApplication.adhocClient_port, 0);
 
                     //adhocThread = new AdhocClientThread("127.0.0.0", 7090, 0);
                 }
@@ -193,6 +277,28 @@ public class MainActivity extends AppCompatActivity {
 
                 } else if (string == "三维建模") {
 
+                    findViewById(R.id.layout_model3d).setVisibility(View.VISIBLE);
+
+                    findViewById(R.id.model3d_start).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(mapView!=null) {
+
+                                EditText editText_first = (EditText)findViewById(R.id.model3d_firstFloorHeight);
+                                EditText editText_height = (EditText)findViewById(R.id.model3d_eachfloorHeight);
+                                EditText editText_num = (EditText)findViewById(R.id.model3d_floorNumber);
+                                float firstf  = Float.valueOf(editText_first.getText().toString());
+                                float heightf  = Float.valueOf(editText_height.getText().toString());
+                                int floornum  = Integer.valueOf(editText_num.getText().toString());
+
+                                mapView.startSetup3Dmodel(firstf,heightf,floornum);
+                                findViewById(R.id.layout_model3d).setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    });
+
+                    if(mapView != null)
+                        mapView.startSelectPoint();
 
                 } else if (string == "新增设备") {
                     if (deviceManagerinterface != null)
@@ -211,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 } else if (string == "撤离指令") {
-                    replaceMainContentFragment(new ShowCmdRetreat(new ShowCmdRetreat.interfaceRetreat() {
+                    replaceMainContentFragment(new ShowCmdRetreat(MainActivity.this,new ShowCmdRetreat.interfaceRetreat() {
                         @Override
                         public void interfaceRetreat(int cmdlevel, List<Integer> listretreat) {
 
@@ -233,20 +339,22 @@ public class MainActivity extends AppCompatActivity {
                     }));
 
                 } else if (string == "搜救指令") {
-                    replaceMainContentFragment(new ShowCmdResuce(new ShowCmdResuce.interfaceRescue() {
+                    replaceMainContentFragment(new ShowCmdResuce(MainActivity.this,new ShowCmdResuce.interfaceRescue() {
                         @Override
                         public void interfaceRescue(int firemenid, List<Integer> listrescue) {
 
                             DataApplication dataApplication = (DataApplication) getApplication();
                             Firemen firemen = dataApplication.findFiremenFromID(firemenid);
 
-                            Rescue rescue = new Rescue(Integer.valueOf(firemen.getBindDeviceId()), firemen.getCurLocation().latitude, firemen.getCurLocation().longitude
-                                    , firemen.getLatState(), firemen.getLngState(), firemen.getHeight(), firemen.getLocalState(), firemen.getFloor());
+
+                            Log.e("test","搜救:"+firemen.getCurLocation().latitude+","+firemen.getCurLocation().longitude);
+                            Rescue rescue = new Rescue(firemen.getBindDeviceId(), firemen.getCurLocation().latitude, firemen.getCurLocation().longitude
+                                    , firemen.getLatState(), firemen.getLngState(), firemen.getHeight(), firemen.getLocalState(), firemen.getFloor()-1);
 
                             for (int i = 0; i < listrescue.size(); i++)
                                 rescue.listRescue.add(listrescue.get(i));
 
-                            send_cmd(AdhocProtocol.rescue, rescue);
+                            send_cmd(CMD_Rescue, rescue);
 
                         }
                     }));
@@ -261,9 +369,9 @@ public class MainActivity extends AppCompatActivity {
                 } else if (string == "楼层设置") {
                     replaceMainContentFragment(new ShowFloorSet(new ShowFloorSet.interfaceFloorConifg() {
                         @Override
-                        public void interfaceFloorConifg(float topfirstHeight, float topheight, float lowfirstheight, float lowheight) {
+                        public void interfaceFloorConifg(float curfloor, float topfirstHeight, float topheight, float lowfirstheight, float lowheight) {
 
-                            FloorConfig floorConfig = new FloorConfig(topfirstHeight, topheight, lowfirstheight, lowheight);
+                            FloorConfig floorConfig = new FloorConfig(curfloor, topfirstHeight, topheight, lowfirstheight, lowheight);
 
                             send_cmd(CMD_FloorConifg, floorConfig);
                         }
@@ -273,7 +381,15 @@ public class MainActivity extends AppCompatActivity {
                     replaceMainContentFragment(new ShowNetSet(new ShowNetSet.interfaceNetConnect() {
                         @Override
                         public void interfaceAdhocConnect(String ip, int port) {
-                            //adhocThread = new AdhocClientThread(ip,port,0);
+
+                            if (adhocThread != null) {
+
+                                //if (dataApplication.adhocClient_ip != ip || dataApplication.adhocClient_port != port)
+                                adhocThread.restartSocket(ip, port);
+                                //else
+                                //    Toast.makeText(getApplicationContext(), "ip和端口一样", Toast.LENGTH_SHORT).show();
+                            } else
+                                adhocThread = new AdhocClientThread(ip, port, 0);
                         }
 
                         @Override
@@ -324,41 +440,20 @@ public class MainActivity extends AppCompatActivity {
 
         switch (resId) {
 
+            case R.id.btn_floor:
 
-//            case R.id.menu_quanyuanchetui:
-//                break;
-//            //系统设置
-//            case R.id.menu_loucengshezhi:
-//                replaceMainContentFragment(new ShowFloorSet(new ShowFloorSet.interfaceFloorConifg() {
-//                    @Override
-//                    public void interfaceFloorConifg(float topfirstHeight, float topheight, float lowfirstheight, float lowheight) {
-//                        Log.e(TAG, "楼层配置");
-//
-//
-//                    }
-//                }));
-//                break;
-//            case R.id.menu_wangluoshezhi:
-//                replaceMainContentFragment(new ShowNetSet(new ShowNetSet.interfaceNetConnect() {
-//                    @Override
-//                    public void interfaceAdhocConnect(String ip, int port) {
-//
-//                    }
-//
-//                    @Override
-//                    public void interfaceCloudConnect(String ip, int port) {
-//
-//                    }
-//                }));
-//                break;
-//            case R.id.menu_tongxinsehzhi:
-//                replaceMainContentFragment(new ShowCommunicationSet());
-//                break;
-//            case R.id.menu_lixianditu:
-//                replaceMainContentFragment(new ShowOfflineMap());
-//                break;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    view.setBackground(getResources().getDrawable(R.drawable.shape_showinfo_checked));
+                    findViewById(R.id.btn_log).setBackground(getResources().getDrawable(R.drawable.shape_showinfo));
+                }
+                break;
+            case R.id.btn_log:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    view.setBackground(getResources().getDrawable(R.drawable.shape_showinfo_checked));
+                    findViewById(R.id.btn_floor).setBackground(getResources().getDrawable(R.drawable.shape_showinfo));
+                }
+                break;
         }
-
     }
 
 
@@ -393,7 +488,7 @@ public class MainActivity extends AppCompatActivity {
                 replaceMainContentFragment(new ShowRescueLocation());
                 break;
             case 2:
-                replaceMainContentFragment(new ShowIndoorMap());
+                replaceMainContentFragment(new ShowIndoorMap(this));
                 break;
             case 3:
                 replaceMainContentFragment(new ShowDeviceManager(this));
@@ -404,8 +499,10 @@ public class MainActivity extends AppCompatActivity {
             case 5:
                 replaceMainContentFragment(new ShowFloorSet(new ShowFloorSet.interfaceFloorConifg() {
                     @Override
-                    public void interfaceFloorConifg(float topfirstHeight, float topheight, float lowfirstheight, float lowheight) {
+                    public void interfaceFloorConifg(float curfloor, float topfirstHeight, float topheight, float lowfirstheight, float lowheight) {
                         Log.e(TAG, "楼层配置");
+                        FloorConfig floorConfig = new FloorConfig(curfloor, topfirstHeight, topheight, lowfirstheight, lowheight);
+                        send_cmd(CMD_FloorConifg, floorConfig);
                     }
                 }));
                 break;
@@ -488,7 +585,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        AdhocClientThread.receiHandler.sendMessage(msg);
+        if (AdhocClientThread.receiHandler != null)
+            AdhocClientThread.receiHandler.sendMessage(msg);
 
     }
 
@@ -502,7 +600,7 @@ public class MainActivity extends AppCompatActivity {
             public void handleMessage(final Message msg) {
                 super.handleMessage(msg);
 
-                Log.e(handmsgTag, "what:" + msg.what + " obj:" + msg.obj.toString() + " arg1:" + msg.arg1 + " arg2:" + msg.arg2);
+                //Log.e(handmsgTag, "what:" + msg.what + " obj:" + msg.obj.toString() + " arg1:" + msg.arg1 + " arg2:" + msg.arg2);
 
                 Message sendmsg = new Message();
                 switch (msg.what) {
@@ -517,14 +615,32 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case CMD_RecSos:
+
+                        Sos sos = (Sos) msg.obj;
+
+                        dataApplication.setSosFiremenState(sos.id);
                         break;
+                    case CMD_RecRescue:
+                        break;
+                    case CMD_RecRetreat:
+                        break;
+                    case CMD_FloorConifg:
+                        break;
+                    case Adhoc_Connect:
+
+                        boolean isConnect = (Boolean) msg.obj;
+                        if (isConnect)
+                            ((ImageView) findViewById(R.id.adhoc)).setImageResource(R.mipmap.localnet);
+                        else
+                            ((ImageView) findViewById(R.id.adhoc)).setImageResource(R.mipmap.localnet_r);
+                        break;
+
                 }
             }
 
             ;
         };
     }
-
 
     //    public interface interfaceGaodeMap {
 //        void setup3Dmodel();
@@ -539,6 +655,7 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     //activity 与 fragment 通信接口
+    //设备管理
     public interface DeviceManagerinterface {
 
         void newDeivece();
@@ -547,12 +664,29 @@ public class MainActivity extends AppCompatActivity {
 
         void deleteSelect();
     }
-
     private DeviceManagerinterface deviceManagerinterface;
-
     public void setDeviceManagerListener(DeviceManagerinterface interfacepar) {
         this.deviceManagerinterface = interfacepar;
     }
+    //人员信息
+    public interface PersonInfointerface{
+        void notifyRescueUpdate();
+        void notifyRescuedUpdate();
+        void notifyRetreatUpdate();
+    }
+    private PersonInfointerface personInfointerface;
+    public void setPersonInfoListener(PersonInfointerface interfacepar) {
+        this.personInfointerface = interfacepar;
+    }
 
+    //室内定位
+    public interface IndoorMapinterface{
+        void notifyMapUpdate();
+
+    }
+    private IndoorMapinterface indoormapinterface;
+    public void setIndoorMapListener(IndoorMapinterface interfacepar) {
+        this.indoormapinterface = interfacepar;
+    }
 }
 

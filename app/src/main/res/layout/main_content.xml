@@ -63,8 +63,97 @@
         android:layout_height="match_parent"
         android:layout_toLeftOf="@+id/rightFloor"
         android:layout_toRightOf="@+id/leftMenu"
-        android:background="@drawable/maincontent"></com.example.firecommandandcontrolsystem.myClass.MyMapView>
+        android:background="@drawable/maincontent">
+    </com.example.firecommandandcontrolsystem.myClass.MyMapView>
 
+
+    <LinearLayout
+        android:id="@+id/layout_model3d"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/gaodeMap"
+        android:layout_alignTop="@+id/gaodeMap"
+        android:background="#cc011a43"
+        android:paddingHorizontal="10dp"
+        android:visibility="invisible"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="一楼层高（米）："
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/fontsize_4">
+            </TextView>
+
+            <EditText
+                android:id="@+id/model3d_firstFloorHeight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/fontsize_4"
+                android:inputType="numberDecimal"
+                android:lines="1"
+                android:text="5"
+                android:textColor="@color/fontcolor_dep1"></EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="二层以上（米）："
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/fontsize_4">
+            </TextView>
+
+            <EditText
+                android:id="@+id/model3d_eachfloorHeight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/fontsize_4"
+                android:inputType="numberDecimal"
+                android:lines="1"
+                android:text="3"
+                android:textColor="@color/fontcolor_dep1"></EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="楼层数："
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/fontsize_4">
+            </TextView>
+
+            <EditText
+                android:id="@+id/model3d_floorNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/fontsize_4"
+                android:inputType="numberDecimal"
+                android:lines="1"
+                android:text="4"
+                android:textColor="@color/fontcolor_dep1"></EditText>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/model3d_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="建模"></Button>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/rightFloor"
@@ -79,17 +168,34 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginBottom="10dp"
-            android:background="@color/colorStates">
+            android:background="@color/colorStates"
+            android:orientation="horizontal">
 
-            <TextView
+            <Button
+                android:id="@+id/btn_floor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:text="信息"
                 android:textColor="#ADCEFE"
-                android:textSize="@dimen/fontsize_2"></TextView>
+                android:background="@drawable/shape_showinfo_checked"
+                android:text="楼层"
+                android:onClick="onClick"
+                android:textSize="@dimen/fontsize_2"></Button>
+
+            <Button
+                android:id="@+id/btn_log"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="#ADCEFE"
+                android:text="日志"
+                android:onClick="onClick"
+                android:background="@drawable/shape_showinfo"
+                android:textSize="@dimen/fontsize_2"></Button>
         </LinearLayout>
+
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -99,6 +205,7 @@
             android:background="@mipmap/rightbackground">
 
             <com.example.firecommandandcontrolsystem.myClass.FloorInfo
+                android:id="@+id/floorinfo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="20dp"

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.firecommandandcontrolsystem.Adapter.FiremenRetreatAdapter;
+import com.example.firecommandandcontrolsystem.MainActivity;
 import com.example.firecommandandcontrolsystem.R;
 import com.example.firecommandandcontrolsystem.myClass.DataApplication;
 import com.example.firecommandandcontrolsystem.myClass.Firemen;
@@ -24,19 +25,36 @@ public class ShowCmdRetreat extends Fragment {
     GridView firemenRetreatGirdview;
     FiremenRetreatAdapter firemenRetreatAdapter;
 
-    public  ShowCmdRetreat(interfaceRetreat retreat){
+    public ShowCmdRetreat(MainActivity activity, interfaceRetreat retreat) {
 
         cmdRetreat = retreat;
+        activity.setPersonInfoListener(new MainActivity.PersonInfointerface() {
+            @Override
+            public void notifyRescueUpdate() {
 
+            }
+
+            @Override
+            public void notifyRescuedUpdate() {
+
+            }
+
+            @Override
+            public void notifyRetreatUpdate() {
+                if (firemenRetreatAdapter != null)
+                    firemenRetreatAdapter.notifyDataSetChanged();
+            }
+        });
     }
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
-        View view = inflater.inflate(R.layout.fragment_cmd_retreat,container,false);
+        View view = inflater.inflate(R.layout.fragment_cmd_retreat, container, false);
 
-        firemenRetreatGirdview  = view.findViewById(R.id.firemen_retreat_gridview);
+        firemenRetreatGirdview = view.findViewById(R.id.firemen_retreat_gridview);
 
-        firemenRetreatAdapter = new FiremenRetreatAdapter(getContext(),((DataApplication)getContext().getApplicationContext()).listFiremen);
+        firemenRetreatAdapter = new FiremenRetreatAdapter(getContext(), ((DataApplication) getContext().getApplicationContext()).listFiremen);
 
         firemenRetreatGirdview.setAdapter(firemenRetreatAdapter);
 
@@ -61,20 +79,20 @@ public class ShowCmdRetreat extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(cmdRetreat != null){
+                if (cmdRetreat != null) {
                     List<Integer> listretreate = new ArrayList<>();
-                    List<Firemen> firemens = ((DataApplication)((DataApplication) getContext().getApplicationContext())).listFiremen;
+                    List<Firemen> firemens = ((DataApplication) ((DataApplication) getContext().getApplicationContext())).listFiremen;
 
-                    for(int i=0;i<firemens.size();i++){
+                    for (int i = 0; i < firemens.size(); i++) {
                         Firemen firemen = firemens.get(i);
-                        if(firemen.isSelectRetreat()){
-                            listretreate.add( Integer.valueOf(firemen.getBindDeviceId()));
+                        if (firemen.isSelectRetreat()) {
+                            listretreate.add(Integer.valueOf(firemen.getBindDeviceId()));
                             break;
                         }
                     }
 
 
-                    cmdRetreat.interfaceRetreat(2,listretreate);
+                    cmdRetreat.interfaceRetreat(2, listretreate);
                 }
 
             }
@@ -83,11 +101,12 @@ public class ShowCmdRetreat extends Fragment {
         return view;
     }
 
-    public interface  interfaceRetreat{
-        void interfaceRetreat(int cmdlevel,List<Integer> listretreat);
+    public interface interfaceRetreat {
+        void interfaceRetreat(int cmdlevel, List<Integer> listretreat);
     }
+
     /**
-     *定义一个变量储存数据
+     * 定义一个变量储存数据
      */
     private interfaceRetreat cmdRetreat;
 }

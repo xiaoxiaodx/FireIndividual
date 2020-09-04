@@ -56,7 +56,7 @@ public class RescueLocation extends View {
         int LINE_NUM_Y = ynums.length;
         int LINE_NUM_X = xnums.length;
 
-        Log.e("ssssssssss",""+Max_X);
+        //Log.e("ssssssssss",""+Max_X);
         int axisXW = Max_X - startX;
         int axisYH = Max_Y - startX;
         //画X轴

@@ -1,11 +1,18 @@
 package com.example.firecommandandcontrolsystem.myClass;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PointF;
+import android.util.Log;
 
+import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.LatLng;
 import com.example.firecommandandcontrolsystem.R;
+import com.example.firecommandandcontrolsystem.fragment.ShowDeviceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +23,9 @@ public class DataApplication extends Application {
 
 
     public int mastermenuCurSelectIndex = 0;
+
+    //室内地图
+    public int indoormap_floor_curSelectIndex = 1;
 
     //全局定位
     public int mapglobalMenuCurSelectIndex = 0;
@@ -37,11 +47,12 @@ public class DataApplication extends Application {
     public List<TerminalInfo> terminalInfoList = new ArrayList<>();
     public List<PersonInfo> personInfoList = new ArrayList<>();
 
-    //在线人员表
+    //在线人员表,列表只做数据引用，应避免直接进行增删
+    public List<ShowDeviceManager.DeviceInfo> listdeviceinfo = new ArrayList<>();
     public List<Firemen> listFiremen = new ArrayList<>();
     public List<Firemen> listRescue = new ArrayList<>();
     public List<Firemen> listRescued = new ArrayList<>();
-
+    private int sosCount = 0;
     //自组网网络
     public String adhocClient_ip;
     public int adhocClient_port;
@@ -51,62 +62,119 @@ public class DataApplication extends Application {
     public int cloudClient_port;
 
     //楼层配置数据
-    public float topFirstHeight = 0;
-    public float topHeight = 0;
-    public float lowFirstHeight = 0;
-    public float lowHeight = 0;
+    public float firstFloorHeight = 0;
+    public float eachFloorHeight = 0;
+    public float fu1_floorheight = 0;
+    public float fu_eachfloorheight = 0;
+    public float curfloor = 0;
 
     //3D模型数据
-    public LatLng modelCenter;
-    public int modelzoomLevel;
-    public List<PointF> modelPoints = new ArrayList<>(); //opengl里面的顶点坐标值，以视图中心为原点
+
+    public float model_firstfloorheight;
+    public float model_eachFloorHeight;
+    public int model_floornum = 4;
+    public List<LatLng> modelPoints = new ArrayList<>(); //所选点集合
+
 
     public DataApplication() {
         listFiremen.clear();
         listRescue.clear();
         listRescued.clear();
+    }
 
-//        Firemen firemen1 = new Firemen();
-//        firemen1.setFloor(1);
-//        firemen1.setGroud("012");
-//        firemen1.setName("wangwu");
-//        firemen1.setBindDeviceId(1);
+    public interface DataapplicationInterfaceCallback {
+
+        void toltalNumberOfFiremenChange(int count);
+
+        void onlineNumberOfFiremenChange(int count);
+
+        void sosNumberOfFiremen(int count);
+
+        void notifyIndoorUpdate();
+
+        void showToast(String str);
+
+        void notifyFloorInfoUpdate();
+    }
+
+
+    private DataapplicationInterfaceCallback dataapplicationInterface;
+
+    public void setListener(DataapplicationInterfaceCallback interfacepar) {
+        this.dataapplicationInterface = interfacepar;
+    }
+
+
+    //所有的设备信息 应该通过此函数将数据添加进来，因为设备数量就是总人数  需要反馈到主活动窗口
+    public void addDeviceInfoInList(ShowDeviceManager.DeviceInfo info) {
+
+        listdeviceinfo.add(info);
+
+        if (dataapplicationInterface != null)
+            dataapplicationInterface.toltalNumberOfFiremenChange(listdeviceinfo.size());
+    }
+
+    //唯一增加消防员 的函数
+    public void addFiremenInList(Firemen firemen) {
+        listFiremen.add(firemen);
+
+        //消防员添加的同时 应把他添加进救援人员列表
+        listRescue.add(firemen);
+
+        if (dataapplicationInterface != null)
+            dataapplicationInterface.onlineNumberOfFiremenChange(listFiremen.size());
+
+    }
+
+    public void setSosFiremenState(int id) {
+        Firemen firemen = findFiremenFromID(id);
+        if (firemen == null) {
+            if (dataapplicationInterface != null)
+                dataapplicationInterface.showToast("求救人员:" + id + " 未在线，");
+            return;
+        }
+
+        int cmdRescuedState = firemen.getCmdStateRescued();
+
+        Log.e("test", "求救人员:" + cmdRescuedState + "," + firemen.getCmd_state());
+
+        if (firemen.getCmdStateRescued() == Firemen.CMD_STATE_RESCUED)
+            return;
+        else
+            firemen.setCMDstate(Firemen.CMD_STATE_RESCUED);
+
+        sosCount++;
+
+        listRescued.add(firemen);
+        listRescue.remove(firemen);
+
+        if (dataapplicationInterface != null)
+            dataapplicationInterface.sosNumberOfFiremen(sosCount);
+    }
+
+
+    public void addIndoorLatlngInFiremen(Firemen curFiremen, int floor, LatLng pt) {
+
+
+        List<Firemen.LatLngFloor> listindoor = curFiremen.listIndoorPoint;
+
+
+        listindoor.add(new Firemen.LatLngFloor(floor,pt));
+
+
+
+//        if (curFiremen.listTrackHashMap.containsKey(floor)) {
+//            curFiremen.listTrackHashMap.get(floor).add(pt);
+//        } else {
+//            List<LatLng> list = new ArrayList<>();
+//            list.add(pt);
+//            curFiremen.listTrackHashMap.put(floor, list);
+//        }
 //
-//        Firemen firemen2 = new Firemen();
-//        firemen2.setFloor(2);
-//        firemen2.setGroud("012");
-//        firemen2.setName("wangwu");
-//        firemen2.setBindDeviceId(2);
-//
-//        Firemen firemen3 = new Firemen();
-//        firemen3.setFloor(3);
-//        firemen3.setGroud("012");
-//        firemen3.setName("wangwu");
-//        firemen3.setBindDeviceId(3);
-//
-//        Firemen firemen4 = new Firemen();
-//        firemen4.setFloor(4);
-//        firemen4.setGroud("012");
-//        firemen4.setName("wangwu");
-//        firemen4.setBindDeviceId(4);
-//
-//        Firemen firemen5 = new Firemen();
-//        firemen5.setFloor(5);
-//        firemen5.setGroud("012");
-//        firemen5.setName("wangwu");
-//        firemen5.setBindDeviceId(5);
-//
-//        listFiremen.add(firemen1);
-//        listFiremen.add(firemen2);
-//        listFiremen.add(firemen3);
-//        listFiremen.add(firemen4);
-//        listFiremen.add(firemen5);
-//
-//
-//        listRescue.add(firemen1);
-//
-//        listRescued.add(firemen3);
-//        listRescued.add(firemen2);
+        if (dataapplicationInterface != null) {
+            dataapplicationInterface.notifyIndoorUpdate();
+            dataapplicationInterface.notifyFloorInfoUpdate();
+        }
     }
 
 
@@ -187,6 +255,8 @@ public class DataApplication extends Application {
 
     }
 
+
+
     public Firemen findFiremenFromID(int id) {
 
         for (int i = 0; i < listFiremen.size(); i++) {
@@ -195,7 +265,18 @@ public class DataApplication extends Application {
             if (firemen.getBindDeviceId() == id) {
                 return firemen;
             }
+        }
+        return null;
+    }
 
+    public Firemen findFiremenFromID(int id, List<Firemen> list) {
+
+        for (int i = 0; i < list.size(); i++) {
+
+            Firemen firemen = list.get(i);
+            if (firemen.getBindDeviceId() == id) {
+                return firemen;
+            }
         }
         return null;
     }
@@ -212,5 +293,137 @@ public class DataApplication extends Application {
         public String name;
         public int number;
         public String group;
+    }
+
+
+    public void saveFloorConfig(float curFloorNum, float firstFloorHeight, float eachFloorHeight, float fu1_floorheight, float fu_eachfloorheight) {
+        SharedPreferences sharedPreferences = getSharedPreferences("floorConifg", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat("curFloorNum", curFloorNum);
+        editor.putFloat("firstFloorHeight", firstFloorHeight);
+        editor.putFloat("eachFloorHeight", eachFloorHeight);
+        editor.putFloat("fu1_floorheight", fu1_floorheight);
+        editor.putFloat("fu_eachfloorheight", fu_eachfloorheight);
+
+        editor.commit();
+    }
+
+    public void getFloorConfig() {
+        SharedPreferences sharedPreferences = getSharedPreferences("floorConifg", 0);
+
+        curfloor = sharedPreferences.getFloat("curFloorNum", 0);
+        firstFloorHeight = sharedPreferences.getFloat("firstFloorHeight", 0);
+        eachFloorHeight = sharedPreferences.getFloat("eachFloorHeight", 0);
+        fu1_floorheight = sharedPreferences.getFloat("fu1_floorheight", 0);
+        fu_eachfloorheight = sharedPreferences.getFloat("fu_eachfloorheight", 0);
+
+    }
+
+    public void saveNetConfig(String jizhanIp, int jizhanPort, String cloudIp, int cloudPort) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("netConifg", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("jizhanIp", jizhanIp);
+        editor.putInt("jizhanPort", jizhanPort);
+        editor.putString("cloudIp", cloudIp);
+        editor.putInt("cloudPort", cloudPort);
+
+        editor.commit();
+    }
+
+    public void getNetConfig() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("netConifg", 0);
+
+        adhocClient_ip = sharedPreferences.getString("jizhanIp", "");
+        adhocClient_port = sharedPreferences.getInt("jizhanPort", 0);
+        cloudClient_ip = sharedPreferences.getString("cloudIp", "");
+        cloudClient_port = sharedPreferences.getInt("cloudPort", 0);
+    }
+
+
+    public float[] getColorByID(int id) {
+
+        switch (id) {
+
+            case 1:
+                return new float[]{0.96f, 0.92f, 0.16f, 1};
+            case 2:
+                return new float[]{0.10f, 0.98f, 0.16f, 1};
+            case 3:
+                return new float[]{0.70f, 1f, 0f, 1};
+            case 4:
+                return new float[]{0.0f, 0.65f, 1f, 1};
+            case 5:
+                return new float[]{0.45f, 0.0f, 1f, 1};
+            case 6:
+                return new float[]{0.0f, 0.15f, 1f, 1};
+            case 7:
+                return new float[]{0.0f, 0.63f, 0.08f, 1};
+            case 8:
+                return new float[]{1f, 0.11f, 0f, 1};
+            case 9:
+                return new float[]{1f, 0.0f, 0.49f, 1};
+            case 10:
+                return new float[]{1f, 0.41f, 0.01f, 1};
+
+        }
+        return new float[]{1f, 1f, 1f, 1};
+    }
+
+    public String getColorStrByID(int id) {
+
+        switch (id) {
+            case 1:
+                return "#f4ea2a";
+            case 2:
+                return "#1afa29";
+            case 3:
+                return "#b4ff00";
+            case 4:
+                return "#00a7ff";
+            case 5:
+                return "#7200ff";
+            case 6:
+                return "#0025ff";
+            case 7:
+                return "#00a015";
+            case 8:
+                return "#ff1d00";
+            case 9:
+                return "#ff007d";
+            case 10:
+                return "#ff6802";
+            default:
+
+        }
+        return "#000000";
+    }
+
+    public Bitmap getPersonBitMapByID(int id) {
+        switch (id) {
+
+            case 1:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_1);
+            case 2:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_2);
+            case 3:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_3);
+            case 4:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_4);
+            case 5:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_5);
+            case 6:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_6);
+            case 7:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_7);
+            case 8:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_8);
+            case 9:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_9);
+            case 10:
+                return BitmapFactory.decodeResource(getResources(), R.mipmap.marker_10);
+            default:
+
+        }
+        return null;
     }
 }

@@ -70,7 +70,6 @@ public class FiremenRescuedAdapter extends RecyclerView.Adapter<FiremenRescuedAd
     public void onBindViewHolder(@NonNull FiremenRescuedAdapter.ViewHolder holder, final int position) {
         Firemen data = myArrData.get(position);
 
-        holder.textView.setText(data.getBindDeviceId());
         if (position == ((DataApplication) myContext.getApplicationContext()).firemenInfo_rescued_curSelectIndex) {
             if (data.isSelectRescued())
                 data.setSelectRescued(false);
@@ -82,7 +81,7 @@ public class FiremenRescuedAdapter extends RecyclerView.Adapter<FiremenRescuedAd
             holder.linearlayout.setBackgroundColor(Color.parseColor("#02e5f8"));
         else
             holder.linearlayout.setBackgroundColor(Color.parseColor("#063859"));
-        holder.textView.setText(data.getBindDeviceId());
+        holder.textView.setText(String.valueOf(data.getBindDeviceId()));
 
         holder.linearlayout.setOnClickListener(new View.OnClickListener() {
             @Override

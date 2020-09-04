@@ -1,15 +1,19 @@
 package com.example.firecommandandcontrolsystem.adhocNetwork.ProtcocolClass;
 
 public class FloorConfig {
-    public FloorConfig(float firstfloorheight_top, float topheightperfloor, float firstfloorheight_bottom, float bottomheightperfloor) {
-        this.firstfloorheight_top = firstfloorheight_top;
-        this.topheightperfloor = topheightperfloor;
-        this.firstfloorheight_bottom = firstfloorheight_bottom;
-        this.bottomheightperfloor = bottomheightperfloor;
+    public FloorConfig(float curfloor, float firstfloorheight, float eachfloorheight, float fu_firstfloorheight, float fu_eachfloorheight) {
+        this.curfloor = curfloor;
+        this.firstfloorheight = firstfloorheight;
+        this.eachfloorheight = eachfloorheight;
+        this.fu_firstfloorheight = fu_firstfloorheight;
+        this.fu_eachfloorheight = fu_eachfloorheight;
     }
 
-    public float firstfloorheight_top;
-    public float topheightperfloor;
-    public float firstfloorheight_bottom;
-    public float bottomheightperfloor;
+    static public int count;
+    public float curfloor;
+    public float firstfloorheight;
+    public float eachfloorheight;
+    public float fu_firstfloorheight;
+    public float fu_eachfloorheight;
+
 }
